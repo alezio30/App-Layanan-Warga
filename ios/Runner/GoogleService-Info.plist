@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>302247912436-v33io08quclca39f9f8ksrbvlvb778ac.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.302247912436-v33io08quclca39f9f8ksrbvlvb778ac</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>302247912436-fmaabcf6pe4md5d22gpdqpu6bhu715kc.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBjYvyFwz6OKVtn8DkRwzVL3VZ2LlBy07k</string>
+	<key>GCM_SENDER_ID</key>
+	<string>302247912436</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>Aplikasi.Layanan.Warga</string>
+	<key>PROJECT_ID</key>
+	<string>aplikasi-layanan-warga-b541c</string>
+	<key>STORAGE_BUCKET</key>
+	<string>aplikasi-layanan-warga-b541c.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:302247912436:ios:d662dd1ac36c61e6064fa1</string>
+</dict>
+</plist>

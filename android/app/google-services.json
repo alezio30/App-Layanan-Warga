@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "302247912436",
+    "project_id": "aplikasi-layanan-warga-b541c",
+    "storage_bucket": "aplikasi-layanan-warga-b541c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:302247912436:android:8a5f37ce12f9cc2f064fa1",
+        "android_client_info": {
+          "package_name": "Aplikasi.Layanan.Warga"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "302247912436-fmaabcf6pe4md5d22gpdqpu6bhu715kc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "Aplikasi.Layanan.Warga",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "302247912436-nm3skft9pvedfd7puhjg4k80u4do8eq2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKagjJ-lAshRy_6HDmKEvSDFeqhCzS0fU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "302247912436-nm3skft9pvedfd7puhjg4k80u4do8eq2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "302247912436-v33io08quclca39f9f8ksrbvlvb778ac.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "Aplikasi.Layanan.Warga"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
