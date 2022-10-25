@@ -122,7 +122,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   child: Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(2, 2, 2, 2),
                     child: TextFormField(
-                      controller: emailTextController,
+                      controller: textController1,
+                      autofocus: true,
                       obscureText: false,
                       decoration: InputDecoration(
                         labelText: 'Nama',
@@ -179,6 +180,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
                           ),
+                      keyboardType: TextInputType.name,
                     ),
                   ),
                 ),
@@ -201,7 +203,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   child: Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(2, 2, 2, 2),
                     child: TextFormField(
-                      controller: textController1,
+                      controller: textController2,
                       obscureText: false,
                       decoration: InputDecoration(
                         labelText: 'NIK',
@@ -281,7 +283,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   child: Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(2, 2, 2, 2),
                     child: TextFormField(
-                      controller: textController2,
+                      controller: emailTextController,
                       obscureText: false,
                       decoration: InputDecoration(
                         labelText: 'Email Pengguna',
@@ -338,6 +340,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
                           ),
+                      keyboardType: TextInputType.emailAddress,
                     ),
                   ),
                 ),
@@ -417,7 +420,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
                           ),
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.phone,
                     ),
                   ),
                 ),

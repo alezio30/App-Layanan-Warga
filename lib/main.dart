@@ -9,13 +9,20 @@ import 'flutter_flow/flutter_flow_theme.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 import 'flutter_flow/internationalization.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter/foundation.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'flutter_flow/nav/nav.dart';
 import 'index.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  if (!kIsWeb) {
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  }
 
   runApp(MyApp());
 }
@@ -116,13 +123,14 @@ class _NavBarPageState extends State<NavBarPage> {
     final tabs = {
       'HomePage': HomePageWidget(),
       'Informasi': InformasiWidget(),
-      'Inbox': InboxWidget(),
+      'all_inbox': AllInboxWidget(),
       'Profile': ProfileWidget(),
     };
     final currentIndex = tabs.keys.toList().indexOf(_currentPageName);
     return Scaffold(
       body: _currentPage ?? tabs[_currentPageName],
-      bottomNavigationBar: BottomNavigationBar(
+      extendBody: true,
+      bottomNavigationBar: FloatingNavbar(
         currentIndex: currentIndex,
         onTap: (i) => setState(() {
           _currentPage = null;
@@ -131,41 +139,109 @@ class _NavBarPageState extends State<NavBarPage> {
         backgroundColor: Colors.white,
         selectedItemColor: FlutterFlowTheme.of(context).primaryColor,
         unselectedItemColor: Color(0xFF57636C),
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        type: BottomNavigationBarType.fixed,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home_outlined,
-              size: 24,
+        selectedBackgroundColor: Color(0x00000000),
+        borderRadius: 8,
+        itemBorderRadius: 8,
+        margin: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+        width: double.infinity,
+        elevation: 0,
+        items: [
+          FloatingNavbarItem(
+            customWidget: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.home_outlined,
+                  color: currentIndex == 0
+                      ? FlutterFlowTheme.of(context).primaryColor
+                      : Color(0xFF57636C),
+                  size: 24,
+                ),
+                Text(
+                  'Beranda',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: currentIndex == 0
+                        ? FlutterFlowTheme.of(context).primaryColor
+                        : Color(0xFF57636C),
+                    fontSize: 11.0,
+                  ),
+                ),
+              ],
             ),
-            label: 'Beranda',
-            tooltip: '',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.notifications_none,
-              size: 24,
+          FloatingNavbarItem(
+            customWidget: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.notifications_none,
+                  color: currentIndex == 1
+                      ? FlutterFlowTheme.of(context).primaryColor
+                      : Color(0xFF57636C),
+                  size: 24,
+                ),
+                Text(
+                  'Informasi',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: currentIndex == 1
+                        ? FlutterFlowTheme.of(context).primaryColor
+                        : Color(0xFF57636C),
+                    fontSize: 11.0,
+                  ),
+                ),
+              ],
             ),
-            label: 'Informasi',
-            tooltip: '',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.inbox_outlined,
-              size: 24,
+          FloatingNavbarItem(
+            customWidget: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  currentIndex == 2 ? Icons.inbox : Icons.inbox,
+                  color: currentIndex == 2
+                      ? FlutterFlowTheme.of(context).primaryColor
+                      : Color(0xFF57636C),
+                  size: 24,
+                ),
+                Text(
+                  'Inbox',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: currentIndex == 2
+                        ? FlutterFlowTheme.of(context).primaryColor
+                        : Color(0xFF57636C),
+                    fontSize: 11.0,
+                  ),
+                ),
+              ],
             ),
-            label: 'Inbox',
-            tooltip: '',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person_outline_outlined,
-              size: 24,
+          FloatingNavbarItem(
+            customWidget: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.person_outline_outlined,
+                  color: currentIndex == 3
+                      ? FlutterFlowTheme.of(context).primaryColor
+                      : Color(0xFF57636C),
+                  size: 24,
+                ),
+                Text(
+                  'Profil',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: currentIndex == 3
+                        ? FlutterFlowTheme.of(context).primaryColor
+                        : Color(0xFF57636C),
+                    fontSize: 11.0,
+                  ),
+                ),
+              ],
             ),
-            label: 'Profil',
-            tooltip: '',
           )
         ],
       ),

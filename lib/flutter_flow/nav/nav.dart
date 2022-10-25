@@ -107,13 +107,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
                   : InformasiWidget(),
             ),
             FFRoute(
-              name: 'Inbox',
-              path: 'inbox',
-              builder: (context, params) => params.isEmpty
-                  ? NavBarPage(initialPage: 'Inbox')
-                  : InboxWidget(),
-            ),
-            FFRoute(
               name: 'Profile',
               path: 'profile',
               builder: (context, params) => params.isEmpty
@@ -141,16 +134,23 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => FiturPendudukBaruWidget(),
             ),
             FFRoute(
-              name: 'MessagePage',
-              path: 'messagePage',
+              name: 'inbox_page',
+              path: 'inboxPage',
               asyncParams: {
                 'chatUser': getDoc('Users', UsersRecord.serializer),
               },
-              builder: (context, params) => MessagePageWidget(
+              builder: (context, params) => InboxPageWidget(
                 chatUser: params.getParam('chatUser', ParamType.Document),
                 chatRef: params.getParam(
                     'chatRef', ParamType.DocumentReference, false, 'chats'),
               ),
+            ),
+            FFRoute(
+              name: 'all_inbox',
+              path: 'allInbox',
+              builder: (context, params) => params.isEmpty
+                  ? NavBarPage(initialPage: 'all_inbox')
+                  : AllInboxWidget(),
             )
           ].map((r) => r.toRoute(appStateNotifier)).toList(),
         ).toRoute(appStateNotifier),

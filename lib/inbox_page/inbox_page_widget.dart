@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class MessagePageWidget extends StatefulWidget {
-  const MessagePageWidget({
+class InboxPageWidget extends StatefulWidget {
+  const InboxPageWidget({
     Key? key,
     this.chatUser,
     this.chatRef,
@@ -19,10 +19,10 @@ class MessagePageWidget extends StatefulWidget {
   final DocumentReference? chatRef;
 
   @override
-  _MessagePageWidgetState createState() => _MessagePageWidgetState();
+  _InboxPageWidgetState createState() => _InboxPageWidgetState();
 }
 
-class _MessagePageWidgetState extends State<MessagePageWidget> {
+class _InboxPageWidgetState extends State<InboxPageWidget> {
   FFChatInfo? _chatInfo;
   bool isGroupChat() {
     if (widget.chatUser == null) {
@@ -50,7 +50,7 @@ class _MessagePageWidgetState extends State<MessagePageWidget> {
       }
     });
 
-    logFirebaseEvent('screen_view', parameters: {'screen_name': 'MessagePage'});
+    logFirebaseEvent('screen_view', parameters: {'screen_name': 'inbox_page'});
   }
 
   @override
@@ -71,10 +71,23 @@ class _MessagePageWidgetState extends State<MessagePageWidget> {
             size: 24,
           ),
           onPressed: () async {
-            logFirebaseEvent('MESSAGE_arrow_back_rounded_ICN_ON_TAP');
+            logFirebaseEvent('INBOX_arrow_back_rounded_ICN_ON_TAP');
             logFirebaseEvent('IconButton_navigate_back');
             context.pop();
           },
+        ),
+        title: Stack(
+          children: [
+            Text(
+              widget.chatUser!.displayName!,
+              style: FlutterFlowTheme.of(context).bodyText1.override(
+                    fontFamily: 'Lexend Deca',
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+          ],
         ),
         actions: [],
         centerTitle: false,

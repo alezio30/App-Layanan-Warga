@@ -122,6 +122,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                       padding: EdgeInsetsDirectional.fromSTEB(2, 2, 2, 2),
                       child: TextFormField(
                         controller: emailTextController,
+                        autofocus: true,
                         obscureText: false,
                         decoration: InputDecoration(
                           labelText: 'Email Pengguna',
@@ -258,7 +259,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                               fontSize: 14,
                               fontWeight: FontWeight.normal,
                             ),
-                        keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.phone,
                       ),
                     ),
                   ),
