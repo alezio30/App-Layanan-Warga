@@ -4,8 +4,8 @@ export 'forgot_password/forgot_password_widget.dart' show ForgotPasswordWidget;
 export 'sign_up/sign_up_widget.dart' show SignUpWidget;
 export 'home_page/home_page_widget.dart' show HomePageWidget;
 export 'informasi/informasi_widget.dart' show InformasiWidget;
-export 'profile/profile_widget.dart' show ProfileWidget;
 export 'fitur_alamat/fitur_alamat_widget.dart' show FiturAlamatWidget;
+export 'profile/profile_widget.dart' show ProfileWidget;
 export 'fitur_organisasi/fitur_organisasi_widget.dart'
     show FiturOrganisasiWidget;
 export 'fitur_survei/fitur_survei_widget.dart' show FiturSurveiWidget;

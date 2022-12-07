@@ -107,16 +107,16 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
                   : InformasiWidget(),
             ),
             FFRoute(
+              name: 'Fitur_Alamat',
+              path: 'fiturAlamat',
+              builder: (context, params) => FiturAlamatWidget(),
+            ),
+            FFRoute(
               name: 'Profile',
               path: 'profile',
               builder: (context, params) => params.isEmpty
                   ? NavBarPage(initialPage: 'Profile')
                   : ProfileWidget(),
-            ),
-            FFRoute(
-              name: 'Fitur_Alamat',
-              path: 'fiturAlamat',
-              builder: (context, params) => FiturAlamatWidget(),
             ),
             FFRoute(
               name: 'Fitur_Organisasi',

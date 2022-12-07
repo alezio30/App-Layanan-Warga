@@ -317,12 +317,12 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                       ),
                       FFButtonWidget(
                         onPressed: () async {
-                          logFirebaseEvent('LOGIN_LUPA_PASSOWRD_?_BTN_ON_TAP');
+                          logFirebaseEvent('LOGIN_LUPA_PASSOWORD_?_BTN_ON_TAP');
                           logFirebaseEvent('Button_navigate_to');
 
                           context.pushNamed('Forgot_Password');
                         },
-                        text: 'Lupa Passowrd ?',
+                        text: 'Lupa Passoword ?',
                         options: FFButtonOptions(
                           width: 150,
                           height: 50,

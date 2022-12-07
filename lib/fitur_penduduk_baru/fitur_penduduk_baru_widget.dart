@@ -1,8 +1,10 @@
+import '../backend/firebase_storage/storage.dart';
 import '../flutter_flow/flutter_flow_drop_down.dart';
 import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
+import '../flutter_flow/upload_media.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,6 +18,9 @@ class FiturPendudukBaruWidget extends StatefulWidget {
 }
 
 class _FiturPendudukBaruWidgetState extends State<FiturPendudukBaruWidget> {
+  bool isMediaUploading1 = false;
+  String uploadedFileUrl1 = '';
+
   String? dropDownValue;
   TextEditingController? textController1;
   TextEditingController? textController2;
@@ -23,8 +28,9 @@ class _FiturPendudukBaruWidgetState extends State<FiturPendudukBaruWidget> {
   TextEditingController? textController4;
   TextEditingController? textController5;
   TextEditingController? textController6;
-  TextEditingController? textController7;
-  TextEditingController? textController8;
+  bool isMediaUploading2 = false;
+  String uploadedFileUrl2 = '';
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -38,8 +44,6 @@ class _FiturPendudukBaruWidgetState extends State<FiturPendudukBaruWidget> {
     textController4 = TextEditingController();
     textController5 = TextEditingController();
     textController6 = TextEditingController();
-    textController7 = TextEditingController();
-    textController8 = TextEditingController();
   }
 
   @override
@@ -50,8 +54,6 @@ class _FiturPendudukBaruWidgetState extends State<FiturPendudukBaruWidget> {
     textController4?.dispose();
     textController5?.dispose();
     textController6?.dispose();
-    textController7?.dispose();
-    textController8?.dispose();
     super.dispose();
   }
 
@@ -812,7 +814,7 @@ class _FiturPendudukBaruWidgetState extends State<FiturPendudukBaruWidget> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  FlutterFlowDropDown(
+                                  FlutterFlowDropDown<String>(
                                     options: ['Sudah Nikah', 'Belum Nikah'],
                                     onChanged: (val) =>
                                         setState(() => dropDownValue = val),
@@ -1021,76 +1023,73 @@ class _FiturPendudukBaruWidgetState extends State<FiturPendudukBaruWidget> {
                                     .primaryBackground,
                               ),
                             ),
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(12, 4, 12, 0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Expanded(
-                                    child: TextFormField(
-                                      controller: textController7,
-                                      autofocus: true,
-                                      obscureText: false,
-                                      decoration: InputDecoration(
-                                        hintStyle: FlutterFlowTheme.of(context)
-                                            .bodyText2
-                                            .override(
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Color(0x00000000),
-                                            width: 1,
-                                          ),
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(4.0),
-                                            topRight: Radius.circular(4.0),
-                                          ),
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                FFButtonWidget(
+                                  onPressed: () async {
+                                    logFirebaseEvent(
+                                        'FITUR_PENDUDUK_BARU_UPLOAD_FILE_K_K_ANDA');
+                                    logFirebaseEvent('Button_upload_file');
+                                    final selectedFile = await selectFile(
+                                        allowedExtensions: ['pdf']);
+                                    if (selectedFile != null) {
+                                      setState(() => isMediaUploading1 = true);
+                                      String? downloadUrl;
+                                      try {
+                                        showUploadMessage(
+                                          context,
+                                          'Uploading file...',
+                                          showLoading: true,
+                                        );
+                                        downloadUrl = await uploadData(
+                                            selectedFile.storagePath,
+                                            selectedFile.bytes);
+                                      } finally {
+                                        ScaffoldMessenger.of(context)
+                                            .hideCurrentSnackBar();
+                                        isMediaUploading1 = false;
+                                      }
+                                      if (downloadUrl != null) {
+                                        setState(() =>
+                                            uploadedFileUrl1 = downloadUrl!);
+                                        showUploadMessage(
+                                          context,
+                                          'Success!',
+                                        );
+                                      } else {
+                                        setState(() {});
+                                        showUploadMessage(
+                                          context,
+                                          'Failed to upload file',
+                                        );
+                                        return;
+                                      }
+                                    }
+                                  },
+                                  text: 'Upload file KK anda disini',
+                                  options: FFButtonOptions(
+                                    width: 360,
+                                    height: 40,
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryBtnText,
+                                    textStyle: FlutterFlowTheme.of(context)
+                                        .subtitle2
+                                        .override(
+                                          fontFamily: 'Poppins',
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
                                         ),
-                                        focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Color(0x00000000),
-                                            width: 1,
-                                          ),
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(4.0),
-                                            topRight: Radius.circular(4.0),
-                                          ),
-                                        ),
-                                        errorBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Color(0x00000000),
-                                            width: 1,
-                                          ),
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(4.0),
-                                            topRight: Radius.circular(4.0),
-                                          ),
-                                        ),
-                                        focusedErrorBorder:
-                                            UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Color(0x00000000),
-                                            width: 1,
-                                          ),
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(4.0),
-                                            topRight: Radius.circular(4.0),
-                                          ),
-                                        ),
-                                      ),
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyText1
-                                          .override(
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w600,
-                                          ),
+                                    borderSide: BorderSide(
+                                      color: Colors.transparent,
+                                      width: 1,
                                     ),
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -1147,76 +1146,73 @@ class _FiturPendudukBaruWidgetState extends State<FiturPendudukBaruWidget> {
                                     .primaryBackground,
                               ),
                             ),
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(12, 4, 12, 0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Expanded(
-                                    child: TextFormField(
-                                      controller: textController8,
-                                      autofocus: true,
-                                      obscureText: false,
-                                      decoration: InputDecoration(
-                                        hintStyle: FlutterFlowTheme.of(context)
-                                            .bodyText2
-                                            .override(
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Color(0x00000000),
-                                            width: 1,
-                                          ),
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(4.0),
-                                            topRight: Radius.circular(4.0),
-                                          ),
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                FFButtonWidget(
+                                  onPressed: () async {
+                                    logFirebaseEvent(
+                                        'FITUR_PENDUDUK_BARU_UPLOAD_FILE_K_T_P_AN');
+                                    logFirebaseEvent('Button_upload_file');
+                                    final selectedFile = await selectFile(
+                                        allowedExtensions: ['pdf']);
+                                    if (selectedFile != null) {
+                                      setState(() => isMediaUploading2 = true);
+                                      String? downloadUrl;
+                                      try {
+                                        showUploadMessage(
+                                          context,
+                                          'Uploading file...',
+                                          showLoading: true,
+                                        );
+                                        downloadUrl = await uploadData(
+                                            selectedFile.storagePath,
+                                            selectedFile.bytes);
+                                      } finally {
+                                        ScaffoldMessenger.of(context)
+                                            .hideCurrentSnackBar();
+                                        isMediaUploading2 = false;
+                                      }
+                                      if (downloadUrl != null) {
+                                        setState(() =>
+                                            uploadedFileUrl2 = downloadUrl!);
+                                        showUploadMessage(
+                                          context,
+                                          'Success!',
+                                        );
+                                      } else {
+                                        setState(() {});
+                                        showUploadMessage(
+                                          context,
+                                          'Failed to upload file',
+                                        );
+                                        return;
+                                      }
+                                    }
+                                  },
+                                  text: 'Upload file KTP anda disini',
+                                  options: FFButtonOptions(
+                                    width: 360,
+                                    height: 40,
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryBtnText,
+                                    textStyle: FlutterFlowTheme.of(context)
+                                        .subtitle2
+                                        .override(
+                                          fontFamily: 'Poppins',
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
                                         ),
-                                        focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Color(0x00000000),
-                                            width: 1,
-                                          ),
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(4.0),
-                                            topRight: Radius.circular(4.0),
-                                          ),
-                                        ),
-                                        errorBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Color(0x00000000),
-                                            width: 1,
-                                          ),
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(4.0),
-                                            topRight: Radius.circular(4.0),
-                                          ),
-                                        ),
-                                        focusedErrorBorder:
-                                            UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Color(0x00000000),
-                                            width: 1,
-                                          ),
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(4.0),
-                                            topRight: Radius.circular(4.0),
-                                          ),
-                                        ),
-                                      ),
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyText1
-                                          .override(
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w600,
-                                          ),
+                                    borderSide: BorderSide(
+                                      color: Colors.transparent,
+                                      width: 1,
                                     ),
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
