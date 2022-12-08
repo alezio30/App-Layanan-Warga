@@ -88,16 +88,16 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => ForgotPasswordWidget(),
             ),
             FFRoute(
-              name: 'SignUp',
-              path: 'signUp',
-              builder: (context, params) => SignUpWidget(),
-            ),
-            FFRoute(
               name: 'HomePage',
               path: 'homePage',
               builder: (context, params) => params.isEmpty
                   ? NavBarPage(initialPage: 'HomePage')
                   : HomePageWidget(),
+            ),
+            FFRoute(
+              name: 'SignUp',
+              path: 'signUp',
+              builder: (context, params) => SignUpWidget(),
             ),
             FFRoute(
               name: 'Informasi',
@@ -112,13 +112,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => FiturAlamatWidget(),
             ),
             FFRoute(
-              name: 'Profile',
-              path: 'profile',
-              builder: (context, params) => params.isEmpty
-                  ? NavBarPage(initialPage: 'Profile')
-                  : ProfileWidget(),
-            ),
-            FFRoute(
               name: 'Fitur_Organisasi',
               path: 'fiturOrganisasi',
               builder: (context, params) => FiturOrganisasiWidget(),
@@ -127,6 +120,13 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               name: 'Fitur_Survei',
               path: 'fiturSurvei',
               builder: (context, params) => FiturSurveiWidget(),
+            ),
+            FFRoute(
+              name: 'Profile',
+              path: 'profile',
+              builder: (context, params) => params.isEmpty
+                  ? NavBarPage(initialPage: 'Profile')
+                  : ProfileWidget(),
             ),
             FFRoute(
               name: 'Fitur_Penduduk_Baru',
@@ -151,6 +151,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => params.isEmpty
                   ? NavBarPage(initialPage: 'all_inbox')
                   : AllInboxWidget(),
+            ),
+            FFRoute(
+              name: 'Lengkapi_Data',
+              path: 'lengkapiData',
+              builder: (context, params) => LengkapiDataWidget(),
             )
           ].map((r) => r.toRoute(appStateNotifier)).toList(),
         ).toRoute(appStateNotifier),

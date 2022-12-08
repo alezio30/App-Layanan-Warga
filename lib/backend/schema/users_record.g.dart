@@ -68,40 +68,12 @@ class _$UsersRecordSerializer implements StructuredSerializer<UsersRecord> {
         ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
-    value = object.nik;
-    if (value != null) {
-      result
-        ..add('NIK')
-        ..add(serializers.serialize(value,
-            specifiedType: const FullType(String)));
-    }
-    value = object.kk;
-    if (value != null) {
-      result
-        ..add('KK')
-        ..add(serializers.serialize(value,
-            specifiedType: const FullType(String)));
-    }
     value = object.birthDate;
     if (value != null) {
       result
         ..add('birth_date')
         ..add(serializers.serialize(value,
             specifiedType: const FullType(DateTime)));
-    }
-    value = object.ktp;
-    if (value != null) {
-      result
-        ..add('KTP')
-        ..add(serializers.serialize(value,
-            specifiedType: const FullType(String)));
-    }
-    value = object.kKPic;
-    if (value != null) {
-      result
-        ..add('KK_pic')
-        ..add(serializers.serialize(value,
-            specifiedType: const FullType(String)));
     }
     value = object.roles;
     if (value != null) {
@@ -160,25 +132,9 @@ class _$UsersRecordSerializer implements StructuredSerializer<UsersRecord> {
           result.name = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
           break;
-        case 'NIK':
-          result.nik = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String?;
-          break;
-        case 'KK':
-          result.kk = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String?;
-          break;
         case 'birth_date':
           result.birthDate = serializers.deserialize(value,
               specifiedType: const FullType(DateTime)) as DateTime?;
-          break;
-        case 'KTP':
-          result.ktp = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String?;
-          break;
-        case 'KK_pic':
-          result.kKPic = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String?;
           break;
         case 'Roles':
           result.roles = serializers.deserialize(value,
@@ -213,15 +169,7 @@ class _$UsersRecord extends UsersRecord {
   @override
   final String? name;
   @override
-  final String? nik;
-  @override
-  final String? kk;
-  @override
   final DateTime? birthDate;
-  @override
-  final String? ktp;
-  @override
-  final String? kKPic;
   @override
   final String? roles;
   @override
@@ -238,11 +186,7 @@ class _$UsersRecord extends UsersRecord {
       this.createdTime,
       this.phoneNumber,
       this.name,
-      this.nik,
-      this.kk,
       this.birthDate,
-      this.ktp,
-      this.kKPic,
       this.roles,
       this.ffRef})
       : super._();
@@ -265,11 +209,7 @@ class _$UsersRecord extends UsersRecord {
         createdTime == other.createdTime &&
         phoneNumber == other.phoneNumber &&
         name == other.name &&
-        nik == other.nik &&
-        kk == other.kk &&
         birthDate == other.birthDate &&
-        ktp == other.ktp &&
-        kKPic == other.kKPic &&
         roles == other.roles &&
         ffRef == other.ffRef;
   }
@@ -284,22 +224,14 @@ class _$UsersRecord extends UsersRecord {
                         $jc(
                             $jc(
                                 $jc(
-                                    $jc(
-                                        $jc(
-                                            $jc(
-                                                $jc(
-                                                    $jc($jc(0, email.hashCode),
-                                                        displayName.hashCode),
-                                                    photoUrl.hashCode),
-                                                uid.hashCode),
-                                            createdTime.hashCode),
-                                        phoneNumber.hashCode),
-                                    name.hashCode),
-                                nik.hashCode),
-                            kk.hashCode),
-                        birthDate.hashCode),
-                    ktp.hashCode),
-                kKPic.hashCode),
+                                    $jc($jc(0, email.hashCode),
+                                        displayName.hashCode),
+                                    photoUrl.hashCode),
+                                uid.hashCode),
+                            createdTime.hashCode),
+                        phoneNumber.hashCode),
+                    name.hashCode),
+                birthDate.hashCode),
             roles.hashCode),
         ffRef.hashCode));
   }
@@ -314,11 +246,7 @@ class _$UsersRecord extends UsersRecord {
           ..add('createdTime', createdTime)
           ..add('phoneNumber', phoneNumber)
           ..add('name', name)
-          ..add('nik', nik)
-          ..add('kk', kk)
           ..add('birthDate', birthDate)
-          ..add('ktp', ktp)
-          ..add('kKPic', kKPic)
           ..add('roles', roles)
           ..add('ffRef', ffRef))
         .toString();
@@ -356,25 +284,9 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
   String? get name => _$this._name;
   set name(String? name) => _$this._name = name;
 
-  String? _nik;
-  String? get nik => _$this._nik;
-  set nik(String? nik) => _$this._nik = nik;
-
-  String? _kk;
-  String? get kk => _$this._kk;
-  set kk(String? kk) => _$this._kk = kk;
-
   DateTime? _birthDate;
   DateTime? get birthDate => _$this._birthDate;
   set birthDate(DateTime? birthDate) => _$this._birthDate = birthDate;
-
-  String? _ktp;
-  String? get ktp => _$this._ktp;
-  set ktp(String? ktp) => _$this._ktp = ktp;
-
-  String? _kKPic;
-  String? get kKPic => _$this._kKPic;
-  set kKPic(String? kKPic) => _$this._kKPic = kKPic;
 
   String? _roles;
   String? get roles => _$this._roles;
@@ -398,11 +310,7 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
       _createdTime = $v.createdTime;
       _phoneNumber = $v.phoneNumber;
       _name = $v.name;
-      _nik = $v.nik;
-      _kk = $v.kk;
       _birthDate = $v.birthDate;
-      _ktp = $v.ktp;
-      _kKPic = $v.kKPic;
       _roles = $v.roles;
       _ffRef = $v.ffRef;
       _$v = null;
@@ -434,11 +342,7 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
             createdTime: createdTime,
             phoneNumber: phoneNumber,
             name: name,
-            nik: nik,
-            kk: kk,
             birthDate: birthDate,
-            ktp: ktp,
-            kKPic: kKPic,
             roles: roles,
             ffRef: ffRef);
     replace(_$result);

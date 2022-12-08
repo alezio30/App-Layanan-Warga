@@ -1,44 +1,52 @@
 import '../auth/auth_util.dart';
+import '../backend/backend.dart';
+import '../backend/firebase_storage/storage.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
+import '../flutter_flow/upload_media.dart';
+import '../flutter_flow/random_data_util.dart' as random_data;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SignUpWidget extends StatefulWidget {
-  const SignUpWidget({Key? key}) : super(key: key);
+class LengkapiDataWidget extends StatefulWidget {
+  const LengkapiDataWidget({Key? key}) : super(key: key);
 
   @override
-  _SignUpWidgetState createState() => _SignUpWidgetState();
+  _LengkapiDataWidgetState createState() => _LengkapiDataWidgetState();
 }
 
-class _SignUpWidgetState extends State<SignUpWidget> {
-  TextEditingController? confirmPasswordTextController;
+class _LengkapiDataWidgetState extends State<LengkapiDataWidget> {
+  bool isMediaUploading = false;
+  String uploadedFileUrl = '';
 
-  late bool passwordVisibility2;
-  TextEditingController? emailTextController;
-  TextEditingController? passwordTextController;
-
-  late bool passwordVisibility1;
+  TextEditingController? namaTextController;
+  TextEditingController? nIKTextController;
+  TextEditingController? noHpController;
+  DateTime? datePicked;
+  TextEditingController? textController4;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    confirmPasswordTextController = TextEditingController();
-    passwordVisibility2 = false;
-    emailTextController = TextEditingController();
-    passwordTextController = TextEditingController();
-    passwordVisibility1 = false;
-    logFirebaseEvent('screen_view', parameters: {'screen_name': 'SignUp'});
+    logFirebaseEvent('screen_view',
+        parameters: {'screen_name': 'Lengkapi_Data'});
+    nIKTextController = TextEditingController();
+    namaTextController = TextEditingController();
+    noHpController = TextEditingController();
+    textController4 = TextEditingController(text: datePicked?.toString());
   }
 
   @override
   void dispose() {
-    confirmPasswordTextController?.dispose();
-    emailTextController?.dispose();
-    passwordTextController?.dispose();
+    nIKTextController?.dispose();
+    namaTextController?.dispose();
+    noHpController?.dispose();
+    textController4?.dispose();
     super.dispose();
   }
 
@@ -59,8 +67,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(0, 44, 0, 0),
@@ -68,29 +74,26 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Expanded(
-                          child: Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(0, 0, 0, 30),
-                            child: Container(
-                              width: double.infinity,
-                              height: 50,
-                              decoration: BoxDecoration(),
-                              alignment: AlignmentDirectional(0, 0),
-                              child: Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    16, 0, 16, 0),
-                                child: Text(
-                                  'PENDAFTARAN',
-                                  style: FlutterFlowTheme.of(context)
-                                      .title1
-                                      .override(
-                                        fontFamily: 'Outfit',
-                                        color: FlutterFlowTheme.of(context)
-                                            .primaryColor,
-                                        fontSize: 28,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                ),
+                          child: Container(
+                            width: double.infinity,
+                            height: 80,
+                            decoration: BoxDecoration(),
+                            alignment: AlignmentDirectional(0, 0),
+                            child: Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+                              child: Text(
+                                'LENGKAPI DATA DIRI ANDA',
+                                textAlign: TextAlign.center,
+                                style: FlutterFlowTheme.of(context)
+                                    .title1
+                                    .override(
+                                      fontFamily: 'Outfit',
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryColor,
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                               ),
                             ),
                           ),
@@ -98,8 +101,69 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       ],
                     ),
                   ),
+                  InkWell(
+                    onTap: () async {
+                      logFirebaseEvent(
+                          'LENGKAPI_DATA_CircleImage_vpz5rxm4_ON_TA');
+                      logFirebaseEvent('CircleImage_upload_photo_video');
+                      final selectedMedia = await selectMedia(
+                        maxWidth: 1000.00,
+                        maxHeight: 1000.00,
+                        mediaSource: MediaSource.photoGallery,
+                        multiImage: false,
+                      );
+                      if (selectedMedia != null &&
+                          selectedMedia.every((m) =>
+                              validateFileFormat(m.storagePath, context))) {
+                        setState(() => isMediaUploading = true);
+                        var downloadUrls = <String>[];
+                        try {
+                          showUploadMessage(
+                            context,
+                            'Uploading file...',
+                            showLoading: true,
+                          );
+                          downloadUrls = (await Future.wait(
+                            selectedMedia.map(
+                              (m) async =>
+                                  await uploadData(m.storagePath, m.bytes),
+                            ),
+                          ))
+                              .where((u) => u != null)
+                              .map((u) => u!)
+                              .toList();
+                        } finally {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          isMediaUploading = false;
+                        }
+                        if (downloadUrls.length == selectedMedia.length) {
+                          setState(() => uploadedFileUrl = downloadUrls.first);
+                          showUploadMessage(context, 'Success!');
+                        } else {
+                          setState(() {});
+                          showUploadMessage(context, 'Failed to upload media');
+                          return;
+                        }
+                      }
+                    },
+                    child: Container(
+                      width: 80,
+                      height: 80,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: Image.network(
+                        random_data.randomImageUrl(
+                          0,
+                          0,
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
                   Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
+                    padding: EdgeInsetsDirectional.fromSTEB(0, 24, 0, 0),
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
@@ -116,10 +180,11 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       child: Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(2, 2, 2, 2),
                         child: TextFormField(
-                          controller: emailTextController,
+                          controller: namaTextController,
+                          autofocus: true,
                           obscureText: false,
                           decoration: InputDecoration(
-                            labelText: 'Email Pengguna',
+                            labelText: 'Nama',
                             labelStyle:
                                 FlutterFlowTheme.of(context).bodyText2.override(
                                       fontFamily: 'Outfit',
@@ -127,7 +192,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                       fontSize: 14,
                                       fontWeight: FontWeight.normal,
                                     ),
-                            hintText: 'Email Pengguna',
+                            hintText: 'Nama',
                             hintStyle:
                                 FlutterFlowTheme.of(context).bodyText2.override(
                                       fontFamily: 'Outfit',
@@ -167,9 +232,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             fillColor: Colors.white,
                             contentPadding:
                                 EdgeInsetsDirectional.fromSTEB(20, 24, 20, 24),
-                            prefixIcon: Icon(
-                              Icons.email,
-                            ),
                           ),
                           style:
                               FlutterFlowTheme.of(context).bodyText1.override(
@@ -178,13 +240,13 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                     fontSize: 14,
                                     fontWeight: FontWeight.normal,
                                   ),
-                          keyboardType: TextInputType.emailAddress,
+                          keyboardType: TextInputType.name,
                         ),
                       ),
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 16, 0, 0),
+                    padding: EdgeInsetsDirectional.fromSTEB(0, 24, 0, 0),
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
@@ -201,10 +263,10 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       child: Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(2, 2, 2, 2),
                         child: TextFormField(
-                          controller: passwordTextController,
-                          obscureText: !passwordVisibility1,
+                          controller: nIKTextController,
+                          obscureText: false,
                           decoration: InputDecoration(
-                            labelText: 'Password',
+                            labelText: 'NIK',
                             labelStyle:
                                 FlutterFlowTheme.of(context).bodyText2.override(
                                       fontFamily: 'Outfit',
@@ -212,7 +274,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                       fontSize: 14,
                                       fontWeight: FontWeight.normal,
                                     ),
-                            hintText: 'Password',
+                            hintText: 'NIK',
                             hintStyle:
                                 FlutterFlowTheme.of(context).bodyText2.override(
                                       fontFamily: 'Outfit',
@@ -252,20 +314,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             fillColor: Colors.white,
                             contentPadding:
                                 EdgeInsetsDirectional.fromSTEB(20, 24, 20, 24),
-                            suffixIcon: InkWell(
-                              onTap: () => setState(
-                                () =>
-                                    passwordVisibility1 = !passwordVisibility1,
-                              ),
-                              focusNode: FocusNode(skipTraversal: true),
-                              child: Icon(
-                                passwordVisibility1
-                                    ? Icons.visibility_outlined
-                                    : Icons.visibility_off_outlined,
-                                color: Color(0xFF57636C),
-                                size: 22,
-                              ),
-                            ),
                           ),
                           style:
                               FlutterFlowTheme.of(context).bodyText1.override(
@@ -274,12 +322,13 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                     fontSize: 14,
                                     fontWeight: FontWeight.normal,
                                   ),
+                          keyboardType: TextInputType.number,
                         ),
                       ),
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 16, 0, 0),
+                    padding: EdgeInsetsDirectional.fromSTEB(0, 24, 0, 0),
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
@@ -296,10 +345,10 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       child: Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(2, 2, 2, 2),
                         child: TextFormField(
-                          controller: confirmPasswordTextController,
-                          obscureText: !passwordVisibility2,
+                          controller: noHpController,
+                          obscureText: false,
                           decoration: InputDecoration(
-                            labelText: 'Confirmasi Password',
+                            labelText: 'No. Telepon',
                             labelStyle:
                                 FlutterFlowTheme.of(context).bodyText2.override(
                                       fontFamily: 'Outfit',
@@ -307,7 +356,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                       fontSize: 14,
                                       fontWeight: FontWeight.normal,
                                     ),
-                            hintText: 'Confirmasi Password',
+                            hintText: 'No. Telepon',
                             hintStyle:
                                 FlutterFlowTheme.of(context).bodyText2.override(
                                       fontFamily: 'Outfit',
@@ -347,20 +396,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             fillColor: Colors.white,
                             contentPadding:
                                 EdgeInsetsDirectional.fromSTEB(20, 24, 20, 24),
-                            suffixIcon: InkWell(
-                              onTap: () => setState(
-                                () =>
-                                    passwordVisibility2 = !passwordVisibility2,
-                              ),
-                              focusNode: FocusNode(skipTraversal: true),
-                              child: Icon(
-                                passwordVisibility2
-                                    ? Icons.visibility_outlined
-                                    : Icons.visibility_off_outlined,
-                                color: Color(0xFF57636C),
-                                size: 22,
-                              ),
-                            ),
                           ),
                           style:
                               FlutterFlowTheme.of(context).bodyText1.override(
@@ -369,8 +404,110 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                     fontSize: 14,
                                     fontWeight: FontWeight.normal,
                                   ),
+                          keyboardType: TextInputType.phone,
                         ),
                       ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(0, 24, 0, 0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 8, 0),
+                          child: InkWell(
+                            onTap: () async {
+                              logFirebaseEvent(
+                                  'LENGKAPI_DATA_Container_of8oojso_ON_TAP');
+                              logFirebaseEvent('Container_date_time_picker');
+                              await DatePicker.showDatePicker(
+                                context,
+                                showTitleActions: true,
+                                onConfirm: (date) {
+                                  setState(() => datePicked = date);
+                                },
+                                currentTime: currentUserDocument!.birthDate!,
+                                minTime: DateTime(0, 0, 0),
+                                maxTime: currentUserDocument!.birthDate!,
+                                locale: LocaleType.values.firstWhere(
+                                  (l) =>
+                                      l.name ==
+                                      FFLocalizations.of(context).languageCode,
+                                  orElse: () => LocaleType.en,
+                                ),
+                              );
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.8,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: Color(0xFFCFD4DB),
+                                  width: 1,
+                                ),
+                              ),
+                              child: TextFormField(
+                                controller: textController4,
+                                autofocus: true,
+                                obscureText: false,
+                                decoration: InputDecoration(
+                                  hintText: '[Some hint text...]',
+                                  hintStyle:
+                                      FlutterFlowTheme.of(context).bodyText2,
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0x00000000),
+                                      width: 1,
+                                    ),
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(4.0),
+                                      topRight: Radius.circular(4.0),
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0x00000000),
+                                      width: 1,
+                                    ),
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(4.0),
+                                      topRight: Radius.circular(4.0),
+                                    ),
+                                  ),
+                                  errorBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0x00000000),
+                                      width: 1,
+                                    ),
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(4.0),
+                                      topRight: Radius.circular(4.0),
+                                    ),
+                                  ),
+                                  focusedErrorBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0x00000000),
+                                      width: 1,
+                                    ),
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(4.0),
+                                      topRight: Radius.circular(4.0),
+                                    ),
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.calendar_today,
+                                  ),
+                                ),
+                                style: FlutterFlowTheme.of(context).bodyText1,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Padding(
@@ -384,33 +521,20 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                           child: FFButtonWidget(
                             onPressed: () async {
                               logFirebaseEvent(
-                                  'SIGN_UP_PAGE_DAFTAR_BTN_ON_TAP');
-                              logFirebaseEvent('Button_auth');
-                              GoRouter.of(context).prepareAuthEvent();
-                              if (passwordTextController?.text !=
-                                  confirmPasswordTextController?.text) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Passwords don\'t match!',
-                                    ),
-                                  ),
-                                );
-                                return;
-                              }
+                                  'LENGKAPI_DATA_PAGE_DAFTAR_BTN_ON_TAP');
+                              logFirebaseEvent('Button_backend_call');
 
-                              final user = await createAccountWithEmail(
-                                context,
-                                emailTextController!.text,
-                                passwordTextController!.text,
+                              final usersUpdateData = createUsersRecordData(
+                                displayName: namaTextController!.text,
+                                photoUrl: uploadedFileUrl,
+                                createdTime: getCurrentTimestamp,
+                                phoneNumber: '',
+                                name: namaTextController!.text,
+                                birthDate: datePicked,
+                                roles: '',
                               );
-                              if (user == null) {
-                                return;
-                              }
-
-                              logFirebaseEvent('Button_navigate_to');
-
-                              context.pushNamedAuth('Lengkapi_Data', mounted);
+                              await currentUserReference!
+                                  .update(usersUpdateData);
                             },
                             text: 'DAFTAR',
                             options: FFButtonOptions(
@@ -443,7 +567,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       FFButtonWidget(
                         onPressed: () async {
                           logFirebaseEvent(
-                              'SIGN_UP_SUDAH_MEMILIKI_AKUN_?_MASUK_DISI');
+                              'LENGKAPI_DATA_SUDAH_MEMILIKI_AKUN_?_MASU');
                           logFirebaseEvent('Button_navigate_to');
 
                           context.pushNamed('LoginPage');

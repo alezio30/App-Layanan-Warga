@@ -28,20 +28,8 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
   @BuiltValueField(wireName: 'Name')
   String? get name;
 
-  @BuiltValueField(wireName: 'NIK')
-  String? get nik;
-
-  @BuiltValueField(wireName: 'KK')
-  String? get kk;
-
   @BuiltValueField(wireName: 'birth_date')
   DateTime? get birthDate;
-
-  @BuiltValueField(wireName: 'KTP')
-  String? get ktp;
-
-  @BuiltValueField(wireName: 'KK_pic')
-  String? get kKPic;
 
   @BuiltValueField(wireName: 'Roles')
   String? get roles;
@@ -57,10 +45,6 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
     ..uid = ''
     ..phoneNumber = ''
     ..name = ''
-    ..nik = ''
-    ..kk = ''
-    ..ktp = ''
-    ..kKPic = ''
     ..roles = '';
 
   static CollectionReference get collection =>
@@ -92,11 +76,7 @@ Map<String, dynamic> createUsersRecordData({
   DateTime? createdTime,
   String? phoneNumber,
   String? name,
-  String? nik,
-  String? kk,
   DateTime? birthDate,
-  String? ktp,
-  String? kKPic,
   String? roles,
 }) {
   final firestoreData = serializers.toFirestore(
@@ -110,11 +90,7 @@ Map<String, dynamic> createUsersRecordData({
         ..createdTime = createdTime
         ..phoneNumber = phoneNumber
         ..name = name
-        ..nik = nik
-        ..kk = kk
         ..birthDate = birthDate
-        ..ktp = ktp
-        ..kKPic = kKPic
         ..roles = roles,
     ),
   );
