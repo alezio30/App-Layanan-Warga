@@ -1,6 +1,7 @@
 import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
+import '../flutter_flow/random_data_util.dart' as random_data;
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -125,8 +126,11 @@ class _FiturOrganisasiWidgetState extends State<FiturOrganisasiWidget> {
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(8),
-                                      child: Image.asset(
-                                        'assets/images/diamond_grill_ape.png',
+                                      child: Image.network(
+                                        random_data.randomImageUrl(
+                                          0,
+                                          0,
+                                        ),
                                         width: 90,
                                         height: 100,
                                         fit: BoxFit.cover,
@@ -215,8 +219,11 @@ class _FiturOrganisasiWidgetState extends State<FiturOrganisasiWidget> {
                                 children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
-                                    child: Image.asset(
-                                      'assets/images/diamond_grill_ape.png',
+                                    child: Image.network(
+                                      random_data.randomImageUrl(
+                                        0,
+                                        0,
+                                      ),
                                       width: 90,
                                       height: 100,
                                       fit: BoxFit.cover,
@@ -233,7 +240,7 @@ class _FiturOrganisasiWidgetState extends State<FiturOrganisasiWidget> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Lea sukirman',
+                                          'Andre',
                                           style: FlutterFlowTheme.of(context)
                                               .subtitle1,
                                         ),
@@ -320,7 +327,7 @@ class _FiturOrganisasiWidgetState extends State<FiturOrganisasiWidget> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Lea sukirman',
+                                          'Bagas',
                                           style: FlutterFlowTheme.of(context)
                                               .subtitle1,
                                         ),
@@ -407,7 +414,7 @@ class _FiturOrganisasiWidgetState extends State<FiturOrganisasiWidget> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Lea sukirman',
+                                          'Andra',
                                           style: FlutterFlowTheme.of(context)
                                               .subtitle1,
                                         ),
@@ -494,7 +501,7 @@ class _FiturOrganisasiWidgetState extends State<FiturOrganisasiWidget> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Lea sukirman',
+                                          'Afni',
                                           style: FlutterFlowTheme.of(context)
                                               .subtitle1,
                                         ),
@@ -581,7 +588,7 @@ class _FiturOrganisasiWidgetState extends State<FiturOrganisasiWidget> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Lea sukirman',
+                                          'Yoh',
                                           style: FlutterFlowTheme.of(context)
                                               .subtitle1,
                                         ),

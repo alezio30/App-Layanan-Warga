@@ -95,9 +95,9 @@ class _FiturAlamatWidgetState extends State<FiturAlamatWidget> {
                       allowZoom: true,
                       showZoomControls: true,
                       showLocation: true,
-                      showCompass: false,
-                      showMapToolbar: false,
-                      showTraffic: false,
+                      showCompass: true,
+                      showMapToolbar: true,
+                      showTraffic: true,
                       centerMapOnMarkerTap: true,
                     ),
                   ),
@@ -155,7 +155,7 @@ class _FiturAlamatWidgetState extends State<FiturAlamatWidget> {
                                     autofocus: true,
                                     obscureText: false,
                                     decoration: InputDecoration(
-                                      hintText: 'Masukan Alamat mu disini',
+                                      hintText: 'Cari disini',
                                       hintStyle: FlutterFlowTheme.of(context)
                                           .bodyText2
                                           .override(

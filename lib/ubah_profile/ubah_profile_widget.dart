@@ -1,42 +1,51 @@
 import '../auth/auth_util.dart';
+import '../backend/backend.dart';
+import '../backend/firebase_storage/storage.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
+import '../flutter_flow/upload_media.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ForgotPasswordWidget extends StatefulWidget {
-  const ForgotPasswordWidget({Key? key}) : super(key: key);
+class UbahProfileWidget extends StatefulWidget {
+  const UbahProfileWidget({Key? key}) : super(key: key);
 
   @override
-  _ForgotPasswordWidgetState createState() => _ForgotPasswordWidgetState();
+  _UbahProfileWidgetState createState() => _UbahProfileWidgetState();
 }
 
-class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
-  TextEditingController? emailTextController;
-  TextEditingController? textController;
-  TextEditingController? passwordTextController;
+class _UbahProfileWidgetState extends State<UbahProfileWidget> {
+  bool isMediaUploading = false;
+  String uploadedFileUrl = '';
 
-  late bool passwordVisibility;
+  TextEditingController? namaTextController;
+  TextEditingController? alamatTxtController;
+  TextEditingController? noHpController;
+  TextEditingController? ttlController;
+  TextEditingController? agamatTxtController;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    emailTextController = TextEditingController();
-    textController = TextEditingController();
-    passwordTextController = TextEditingController();
-    passwordVisibility = false;
-    logFirebaseEvent('screen_view',
-        parameters: {'screen_name': 'Forgot_Password'});
+    agamatTxtController = TextEditingController();
+    alamatTxtController = TextEditingController();
+    namaTextController = TextEditingController();
+    noHpController = TextEditingController();
+    ttlController = TextEditingController();
+    logFirebaseEvent('screen_view', parameters: {'screen_name': 'UbahProfile'});
   }
 
   @override
   void dispose() {
-    emailTextController?.dispose();
-    textController?.dispose();
-    passwordTextController?.dispose();
+    agamatTxtController?.dispose();
+    alamatTxtController?.dispose();
+    namaTextController?.dispose();
+    noHpController?.dispose();
+    ttlController?.dispose();
     super.dispose();
   }
 
@@ -44,18 +53,17 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      backgroundColor: Color(0xA2FFFFFF),
       body: SafeArea(
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              color: FlutterFlowTheme.of(context).secondaryBackground,
-            ),
-            child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(24, 24, 24, 24),
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            color: FlutterFlowTheme.of(context).secondaryBackground,
+          ),
+          child: Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(24, 24, 24, 24),
+            child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -67,14 +75,15 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                         Expanded(
                           child: Container(
                             width: double.infinity,
-                            height: 50,
+                            height: 80,
                             decoration: BoxDecoration(),
                             alignment: AlignmentDirectional(0, 0),
                             child: Padding(
                               padding:
                                   EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
                               child: Text(
-                                'LUPA PASSWORD',
+                                'Ubah Data Diri',
+                                textAlign: TextAlign.center,
                                 style: FlutterFlowTheme.of(context)
                                     .title1
                                     .override(
@@ -91,24 +100,67 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Silahkan masukan nomor telepon dan Password baru ',
-                          textAlign: TextAlign.center,
-                          style:
-                              FlutterFlowTheme.of(context).bodyText2.override(
-                                    fontFamily: 'Outfit',
-                                    color: Color(0xFF57636C),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                  AuthUserStreamWidget(
+                    child: InkWell(
+                      onTap: () async {
+                        logFirebaseEvent(
+                            'UBAH_PROFILE_CircleImage_rnge8o9x_ON_TAP');
+                        logFirebaseEvent('CircleImage_upload_photo_video');
+                        final selectedMedia =
+                            await selectMediaWithSourceBottomSheet(
+                          context: context,
+                          maxWidth: 1000.00,
+                          maxHeight: 1000.00,
+                          allowPhoto: true,
+                        );
+                        if (selectedMedia != null &&
+                            selectedMedia.every((m) =>
+                                validateFileFormat(m.storagePath, context))) {
+                          setState(() => isMediaUploading = true);
+                          var downloadUrls = <String>[];
+                          try {
+                            showUploadMessage(
+                              context,
+                              'Uploading file...',
+                              showLoading: true,
+                            );
+                            downloadUrls = (await Future.wait(
+                              selectedMedia.map(
+                                (m) async =>
+                                    await uploadData(m.storagePath, m.bytes),
+                              ),
+                            ))
+                                .where((u) => u != null)
+                                .map((u) => u!)
+                                .toList();
+                          } finally {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            isMediaUploading = false;
+                          }
+                          if (downloadUrls.length == selectedMedia.length) {
+                            setState(
+                                () => uploadedFileUrl = downloadUrls.first);
+                            showUploadMessage(context, 'Success!');
+                          } else {
+                            setState(() {});
+                            showUploadMessage(
+                                context, 'Failed to upload media');
+                            return;
+                          }
+                        }
+                      },
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
                         ),
-                      ],
+                        child: Image.network(
+                          currentUserPhoto,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                   ),
                   Padding(
@@ -129,11 +181,11 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                       child: Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(2, 2, 2, 2),
                         child: TextFormField(
-                          controller: emailTextController,
+                          controller: namaTextController,
                           autofocus: true,
                           obscureText: false,
                           decoration: InputDecoration(
-                            labelText: 'Email Pengguna',
+                            labelText: 'Nama',
                             labelStyle:
                                 FlutterFlowTheme.of(context).bodyText2.override(
                                       fontFamily: 'Outfit',
@@ -141,7 +193,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                                       fontSize: 14,
                                       fontWeight: FontWeight.normal,
                                     ),
-                            hintText: 'Email Pengguna',
+                            hintText: 'Nama',
                             hintStyle:
                                 FlutterFlowTheme.of(context).bodyText2.override(
                                       fontFamily: 'Outfit',
@@ -181,9 +233,6 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                             fillColor: Colors.white,
                             contentPadding:
                                 EdgeInsetsDirectional.fromSTEB(20, 24, 20, 24),
-                            prefixIcon: Icon(
-                              Icons.email,
-                            ),
                           ),
                           style:
                               FlutterFlowTheme.of(context).bodyText1.override(
@@ -192,7 +241,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                                     fontSize: 14,
                                     fontWeight: FontWeight.normal,
                                   ),
-                          keyboardType: TextInputType.emailAddress,
+                          keyboardType: TextInputType.name,
                         ),
                       ),
                     ),
@@ -215,7 +264,89 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                       child: Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(2, 2, 2, 2),
                         child: TextFormField(
-                          controller: textController,
+                          controller: alamatTxtController,
+                          obscureText: false,
+                          decoration: InputDecoration(
+                            labelText: 'Alamat',
+                            labelStyle:
+                                FlutterFlowTheme.of(context).bodyText2.override(
+                                      fontFamily: 'Outfit',
+                                      color: Color(0xFF57636C),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                            hintText: 'Alamat',
+                            hintStyle:
+                                FlutterFlowTheme.of(context).bodyText2.override(
+                                      fontFamily: 'Outfit',
+                                      color: Color(0xFF57636C),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0x00000000),
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0x00000000),
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0x00000000),
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0x00000000),
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding:
+                                EdgeInsetsDirectional.fromSTEB(20, 24, 20, 24),
+                          ),
+                          style:
+                              FlutterFlowTheme.of(context).bodyText1.override(
+                                    fontFamily: 'Outfit',
+                                    color: Color(0xFF0F1113),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                          keyboardType: TextInputType.streetAddress,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(0, 24, 0, 0),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 6,
+                            color: Color(0x3416202A),
+                            offset: Offset(0, 2),
+                          )
+                        ],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(2, 2, 2, 2),
+                        child: TextFormField(
+                          controller: noHpController,
                           obscureText: false,
                           decoration: InputDecoration(
                             labelText: 'No. Telepon',
@@ -226,6 +357,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                                       fontSize: 14,
                                       fontWeight: FontWeight.normal,
                                     ),
+                            hintText: 'No. Telepon',
                             hintStyle:
                                 FlutterFlowTheme.of(context).bodyText2.override(
                                       fontFamily: 'Outfit',
@@ -265,9 +397,6 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                             fillColor: Colors.white,
                             contentPadding:
                                 EdgeInsetsDirectional.fromSTEB(20, 24, 20, 24),
-                            prefixIcon: Icon(
-                              Icons.phone,
-                            ),
                           ),
                           style:
                               FlutterFlowTheme.of(context).bodyText1.override(
@@ -282,7 +411,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 16, 0, 0),
+                    padding: EdgeInsetsDirectional.fromSTEB(0, 24, 0, 0),
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
@@ -299,10 +428,10 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                       child: Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(2, 2, 2, 2),
                         child: TextFormField(
-                          controller: passwordTextController,
-                          obscureText: !passwordVisibility,
+                          controller: ttlController,
+                          obscureText: false,
                           decoration: InputDecoration(
-                            labelText: 'Password Baru',
+                            labelText: 'Tempat Tanggal Lahir',
                             labelStyle:
                                 FlutterFlowTheme.of(context).bodyText2.override(
                                       fontFamily: 'Outfit',
@@ -310,6 +439,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                                       fontSize: 14,
                                       fontWeight: FontWeight.normal,
                                     ),
+                            hintText: 'Tempat Tanggal Lahir',
                             hintStyle:
                                 FlutterFlowTheme.of(context).bodyText2.override(
                                       fontFamily: 'Outfit',
@@ -349,22 +479,87 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                             fillColor: Colors.white,
                             contentPadding:
                                 EdgeInsetsDirectional.fromSTEB(20, 24, 20, 24),
-                            prefixIcon: Icon(
-                              Icons.lock,
-                            ),
-                            suffixIcon: InkWell(
-                              onTap: () => setState(
-                                () => passwordVisibility = !passwordVisibility,
+                          ),
+                          style:
+                              FlutterFlowTheme.of(context).bodyText1.override(
+                                    fontFamily: 'Outfit',
+                                    color: Color(0xFF0F1113),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(0, 24, 0, 0),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 6,
+                            color: Color(0x3416202A),
+                            offset: Offset(0, 2),
+                          )
+                        ],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(2, 2, 2, 2),
+                        child: TextFormField(
+                          controller: agamatTxtController,
+                          obscureText: false,
+                          decoration: InputDecoration(
+                            labelText: 'Agama',
+                            labelStyle:
+                                FlutterFlowTheme.of(context).bodyText2.override(
+                                      fontFamily: 'Outfit',
+                                      color: Color(0xFF57636C),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                            hintText: 'Agama',
+                            hintStyle:
+                                FlutterFlowTheme.of(context).bodyText2.override(
+                                      fontFamily: 'Outfit',
+                                      color: Color(0xFF57636C),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0x00000000),
+                                width: 1,
                               ),
-                              focusNode: FocusNode(skipTraversal: true),
-                              child: Icon(
-                                passwordVisibility
-                                    ? Icons.visibility_outlined
-                                    : Icons.visibility_off_outlined,
-                                color: Color(0xFF57636C),
-                                size: 22,
-                              ),
+                              borderRadius: BorderRadius.circular(12),
                             ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0x00000000),
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0x00000000),
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0x00000000),
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding:
+                                EdgeInsetsDirectional.fromSTEB(20, 24, 20, 24),
                           ),
                           style:
                               FlutterFlowTheme.of(context).bodyText1.override(
@@ -388,26 +583,31 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                           child: FFButtonWidget(
                             onPressed: () async {
                               logFirebaseEvent(
-                                  'FORGOT_PASSWORD_RESET_PASSWORD_BTN_ON_TA');
-                              logFirebaseEvent('Button_auth');
-                              if (emailTextController!.text.isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Email required!',
-                                    ),
-                                  ),
-                                );
-                                return;
-                              }
-                              await resetPassword(
-                                email: emailTextController!.text,
-                                context: context,
+                                  'UBAH_PROFILE_PAGE_UBAH_DATA_BTN_ON_TAP');
+                              logFirebaseEvent('Button_backend_call');
+
+                              final usersUpdateData = createUsersRecordData(
+                                displayName: namaTextController!.text,
+                                photoUrl: uploadedFileUrl,
+                                createdTime: getCurrentTimestamp,
+                                phoneNumber: '',
+                                name: namaTextController!.text,
+                                email: '',
+                                uid: '',
+                                ttl: ttlController!.text,
+                                agama: agamatTxtController!.text,
+                                alamat: valueOrDefault(
+                                    currentUserDocument?.alamat, ''),
                               );
+                              await currentUserReference!
+                                  .update(usersUpdateData);
+                              logFirebaseEvent('Button_navigate_to');
+
+                              context.pushNamed('HomePage');
                             },
-                            text: 'RESET PASSWORD',
+                            text: 'Ubah Data',
                             options: FFButtonOptions(
-                              width: 200,
+                              width: 150,
                               height: 50,
                               color: FlutterFlowTheme.of(context).primaryColor,
                               textStyle: FlutterFlowTheme.of(context)
@@ -428,40 +628,6 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                         ),
                       ],
                     ),
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      FFButtonWidget(
-                        onPressed: () async {
-                          logFirebaseEvent(
-                              'FORGOT_PASSWORD_TIDAK_JADI_?_KLIK_DISINI');
-                          logFirebaseEvent('Button_navigate_to');
-
-                          context.pushNamed('LoginPage');
-                        },
-                        text: 'Tidak jadi ? Klik disini',
-                        options: FFButtonOptions(
-                          width: 165,
-                          height: 60,
-                          color: FlutterFlowTheme.of(context).primaryBackground,
-                          textStyle: FlutterFlowTheme.of(context)
-                              .subtitle2
-                              .override(
-                                fontFamily: 'Poppins',
-                                color:
-                                    FlutterFlowTheme.of(context).secondaryText,
-                                fontSize: 11,
-                              ),
-                          elevation: 0,
-                          borderSide: BorderSide(
-                            color: Colors.transparent,
-                            width: 0,
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),

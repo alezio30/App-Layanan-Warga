@@ -1,6 +1,7 @@
 import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
+import '../flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -63,7 +64,106 @@ class _FiturSurveiWidgetState extends State<FiturSurveiWidget> {
           onTap: () => FocusScope.of(context).unfocus(),
           child: Column(
             mainAxisSize: MainAxisSize.max,
-            children: [],
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(0, 100, 0, 0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
+                          child: Image.asset(
+                            'assets/images/voting_logo.png',
+                            width: 320,
+                            height: 300,
+                            fit: BoxFit.fitWidth,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'MEMILIH SURVEI',
+                        textAlign: TextAlign.center,
+                        style: FlutterFlowTheme.of(context).title1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Dalam memperingati lomba 17 agustus Warga diharapkan  untuk memilih lomba apa saja yang akan diadakan',
+                        textAlign: TextAlign.center,
+                        style: FlutterFlowTheme.of(context).subtitle1.override(
+                              fontFamily: 'Poppins',
+                              color: FlutterFlowTheme.of(context).secondaryText,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(0, 16, 0, 0),
+                      child: FFButtonWidget(
+                        onPressed: () async {
+                          logFirebaseEvent(
+                              'FITUR_SURVEI_PAGE_LANJUT_BTN_ON_TAP');
+                          logFirebaseEvent('Button_navigate_to');
+
+                          context.pushNamed('Survei_pg1');
+                        },
+                        text: 'LANJUT',
+                        options: FFButtonOptions(
+                          width: 200,
+                          height: 50,
+                          color: FlutterFlowTheme.of(context).primaryColor,
+                          textStyle:
+                              FlutterFlowTheme.of(context).subtitle2.override(
+                                    fontFamily: 'Poppins',
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryBackground,
+                                  ),
+                          elevation: 2,
+                          borderSide: BorderSide(
+                            color: Colors.transparent,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

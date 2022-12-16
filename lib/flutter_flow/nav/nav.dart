@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:page_transition/page_transition.dart';
 import '../flutter_flow_theme.dart';
 import '../../backend/backend.dart';
+
 import '../../auth/firebase_user_provider.dart';
 
 import '../../index.dart';
@@ -88,16 +89,16 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => ForgotPasswordWidget(),
             ),
             FFRoute(
+              name: 'SignUp',
+              path: 'signUp',
+              builder: (context, params) => SignUpWidget(),
+            ),
+            FFRoute(
               name: 'HomePage',
               path: 'homePage',
               builder: (context, params) => params.isEmpty
                   ? NavBarPage(initialPage: 'HomePage')
                   : HomePageWidget(),
-            ),
-            FFRoute(
-              name: 'SignUp',
-              path: 'signUp',
-              builder: (context, params) => SignUpWidget(),
             ),
             FFRoute(
               name: 'Informasi',
@@ -134,6 +135,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => FiturPendudukBaruWidget(),
             ),
             FFRoute(
+              name: 'UbahProfile',
+              path: 'ubahProfile',
+              builder: (context, params) => UbahProfileWidget(),
+            ),
+            FFRoute(
               name: 'inbox_page',
               path: 'inboxPage',
               asyncParams: {
@@ -153,9 +159,34 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
                   : AllInboxWidget(),
             ),
             FFRoute(
+              name: 'Survei_pg1',
+              path: 'surveiPg1',
+              builder: (context, params) => SurveiPg1Widget(),
+            ),
+            FFRoute(
               name: 'Lengkapi_Data',
               path: 'lengkapiData',
               builder: (context, params) => LengkapiDataWidget(),
+            ),
+            FFRoute(
+              name: 'Survei_pg2',
+              path: 'surveiPg2',
+              builder: (context, params) => SurveiPg2Widget(),
+            ),
+            FFRoute(
+              name: 'Survei_pg3',
+              path: 'surveiPg3',
+              builder: (context, params) => SurveiPg3Widget(),
+            ),
+            FFRoute(
+              name: 'admin_test',
+              path: 'adminTest',
+              builder: (context, params) => AdminTestWidget(),
+            ),
+            FFRoute(
+              name: 'listWarga',
+              path: 'listWarga',
+              builder: (context, params) => ListWargaWidget(),
             )
           ].map((r) => r.toRoute(appStateNotifier)).toList(),
         ).toRoute(appStateNotifier),

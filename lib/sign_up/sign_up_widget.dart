@@ -252,6 +252,9 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             fillColor: Colors.white,
                             contentPadding:
                                 EdgeInsetsDirectional.fromSTEB(20, 24, 20, 24),
+                            prefixIcon: Icon(
+                              Icons.lock,
+                            ),
                             suffixIcon: InkWell(
                               onTap: () => setState(
                                 () =>
@@ -347,6 +350,9 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             fillColor: Colors.white,
                             contentPadding:
                                 EdgeInsetsDirectional.fromSTEB(20, 24, 20, 24),
+                            prefixIcon: Icon(
+                              Icons.lock,
+                            ),
                             suffixIcon: InkWell(
                               onTap: () => setState(
                                 () =>

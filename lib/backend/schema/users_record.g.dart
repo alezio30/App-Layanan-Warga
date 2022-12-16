@@ -68,17 +68,38 @@ class _$UsersRecordSerializer implements StructuredSerializer<UsersRecord> {
         ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
-    value = object.birthDate;
+    value = object.ttl;
     if (value != null) {
       result
-        ..add('birth_date')
+        ..add('TTL')
         ..add(serializers.serialize(value,
-            specifiedType: const FullType(DateTime)));
+            specifiedType: const FullType(String)));
     }
-    value = object.roles;
+    value = object.agama;
     if (value != null) {
       result
-        ..add('Roles')
+        ..add('Agama')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
+    }
+    value = object.alamat;
+    if (value != null) {
+      result
+        ..add('alamat')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
+    }
+    value = object.rolesAdmin;
+    if (value != null) {
+      result
+        ..add('RolesAdmin')
+        ..add(
+            serializers.serialize(value, specifiedType: const FullType(bool)));
+    }
+    value = object.statusNikah;
+    if (value != null) {
+      result
+        ..add('StatusNikah')
         ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
@@ -132,12 +153,24 @@ class _$UsersRecordSerializer implements StructuredSerializer<UsersRecord> {
           result.name = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
           break;
-        case 'birth_date':
-          result.birthDate = serializers.deserialize(value,
-              specifiedType: const FullType(DateTime)) as DateTime?;
+        case 'TTL':
+          result.ttl = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String?;
           break;
-        case 'Roles':
-          result.roles = serializers.deserialize(value,
+        case 'Agama':
+          result.agama = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String?;
+          break;
+        case 'alamat':
+          result.alamat = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String?;
+          break;
+        case 'RolesAdmin':
+          result.rolesAdmin = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool?;
+          break;
+        case 'StatusNikah':
+          result.statusNikah = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
           break;
         case 'Document__Reference__Field':
@@ -169,9 +202,15 @@ class _$UsersRecord extends UsersRecord {
   @override
   final String? name;
   @override
-  final DateTime? birthDate;
+  final String? ttl;
   @override
-  final String? roles;
+  final String? agama;
+  @override
+  final String? alamat;
+  @override
+  final bool? rolesAdmin;
+  @override
+  final String? statusNikah;
   @override
   final DocumentReference<Object?>? ffRef;
 
@@ -186,8 +225,11 @@ class _$UsersRecord extends UsersRecord {
       this.createdTime,
       this.phoneNumber,
       this.name,
-      this.birthDate,
-      this.roles,
+      this.ttl,
+      this.agama,
+      this.alamat,
+      this.rolesAdmin,
+      this.statusNikah,
       this.ffRef})
       : super._();
 
@@ -209,8 +251,11 @@ class _$UsersRecord extends UsersRecord {
         createdTime == other.createdTime &&
         phoneNumber == other.phoneNumber &&
         name == other.name &&
-        birthDate == other.birthDate &&
-        roles == other.roles &&
+        ttl == other.ttl &&
+        agama == other.agama &&
+        alamat == other.alamat &&
+        rolesAdmin == other.rolesAdmin &&
+        statusNikah == other.statusNikah &&
         ffRef == other.ffRef;
   }
 
@@ -224,15 +269,21 @@ class _$UsersRecord extends UsersRecord {
                         $jc(
                             $jc(
                                 $jc(
-                                    $jc($jc(0, email.hashCode),
-                                        displayName.hashCode),
-                                    photoUrl.hashCode),
-                                uid.hashCode),
-                            createdTime.hashCode),
-                        phoneNumber.hashCode),
-                    name.hashCode),
-                birthDate.hashCode),
-            roles.hashCode),
+                                    $jc(
+                                        $jc(
+                                            $jc(
+                                                $jc($jc(0, email.hashCode),
+                                                    displayName.hashCode),
+                                                photoUrl.hashCode),
+                                            uid.hashCode),
+                                        createdTime.hashCode),
+                                    phoneNumber.hashCode),
+                                name.hashCode),
+                            ttl.hashCode),
+                        agama.hashCode),
+                    alamat.hashCode),
+                rolesAdmin.hashCode),
+            statusNikah.hashCode),
         ffRef.hashCode));
   }
 
@@ -246,8 +297,11 @@ class _$UsersRecord extends UsersRecord {
           ..add('createdTime', createdTime)
           ..add('phoneNumber', phoneNumber)
           ..add('name', name)
-          ..add('birthDate', birthDate)
-          ..add('roles', roles)
+          ..add('ttl', ttl)
+          ..add('agama', agama)
+          ..add('alamat', alamat)
+          ..add('rolesAdmin', rolesAdmin)
+          ..add('statusNikah', statusNikah)
           ..add('ffRef', ffRef))
         .toString();
   }
@@ -284,13 +338,25 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
   String? get name => _$this._name;
   set name(String? name) => _$this._name = name;
 
-  DateTime? _birthDate;
-  DateTime? get birthDate => _$this._birthDate;
-  set birthDate(DateTime? birthDate) => _$this._birthDate = birthDate;
+  String? _ttl;
+  String? get ttl => _$this._ttl;
+  set ttl(String? ttl) => _$this._ttl = ttl;
 
-  String? _roles;
-  String? get roles => _$this._roles;
-  set roles(String? roles) => _$this._roles = roles;
+  String? _agama;
+  String? get agama => _$this._agama;
+  set agama(String? agama) => _$this._agama = agama;
+
+  String? _alamat;
+  String? get alamat => _$this._alamat;
+  set alamat(String? alamat) => _$this._alamat = alamat;
+
+  bool? _rolesAdmin;
+  bool? get rolesAdmin => _$this._rolesAdmin;
+  set rolesAdmin(bool? rolesAdmin) => _$this._rolesAdmin = rolesAdmin;
+
+  String? _statusNikah;
+  String? get statusNikah => _$this._statusNikah;
+  set statusNikah(String? statusNikah) => _$this._statusNikah = statusNikah;
 
   DocumentReference<Object?>? _ffRef;
   DocumentReference<Object?>? get ffRef => _$this._ffRef;
@@ -310,8 +376,11 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
       _createdTime = $v.createdTime;
       _phoneNumber = $v.phoneNumber;
       _name = $v.name;
-      _birthDate = $v.birthDate;
-      _roles = $v.roles;
+      _ttl = $v.ttl;
+      _agama = $v.agama;
+      _alamat = $v.alamat;
+      _rolesAdmin = $v.rolesAdmin;
+      _statusNikah = $v.statusNikah;
       _ffRef = $v.ffRef;
       _$v = null;
     }
@@ -342,8 +411,11 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
             createdTime: createdTime,
             phoneNumber: phoneNumber,
             name: name,
-            birthDate: birthDate,
-            roles: roles,
+            ttl: ttl,
+            agama: agama,
+            alamat: alamat,
+            rolesAdmin: rolesAdmin,
+            statusNikah: statusNikah,
             ffRef: ffRef);
     replace(_$result);
     return _$result;
