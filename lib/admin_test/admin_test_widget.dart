@@ -1,6 +1,7 @@
 import '../auth/auth_util.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
+import '../flutter_flow/flutter_flow_widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -15,12 +16,20 @@ class AdminTestWidget extends StatefulWidget {
 }
 
 class _AdminTestWidgetState extends State<AdminTestWidget> {
+  final _unfocusNode = FocusNode();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
     logFirebaseEvent('screen_view', parameters: {'screen_name': 'admin_test'});
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _unfocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -30,7 +39,7 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
       body: SafeArea(
         child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
+          onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
           child: ListView(
             padding: EdgeInsets.zero,
             scrollDirection: Axis.vertical,
@@ -46,7 +55,7 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                         'Layanan Warga',
                         style: FlutterFlowTheme.of(context).title1.override(
                               fontFamily: 'Poppins',
-                              color: FlutterFlowTheme.of(context).primaryColor,
+                              color: FlutterFlowTheme.of(context).black600,
                               fontSize: 24,
                             ),
                       ),
@@ -74,7 +83,7 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                   width: double.infinity,
                   height: 70,
                   decoration: BoxDecoration(
-                    color: Color(0xFF205493),
+                    color: FlutterFlowTheme.of(context).black600,
                     boxShadow: [
                       BoxShadow(
                         blurRadius: 4,
@@ -122,19 +131,14 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                                   child: Row(
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
-                                      AuthUserStreamWidget(
-                                        child: Text(
-                                          valueOrDefault(
-                                              currentUserDocument?.name, ''),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyText1
-                                              .override(
-                                                fontFamily: 'Poppins',
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondaryBackground,
-                                              ),
-                                        ),
+                                      Text(
+                                        ' Menu ini hanya boleh digunakan oleh admin',
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodyText1
+                                            .override(
+                                              fontFamily: 'Poppins',
+                                              color: Color(0xFFFF0000),
+                                            ),
                                       ),
                                     ],
                                   ),
@@ -149,7 +153,7 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                 ),
               ),
               Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 45),
+                padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
                 child: Wrap(
                   spacing: 0,
                   runSpacing: 0,
@@ -174,7 +178,7 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                           width: MediaQuery.of(context).size.width * 0.4,
                           height: 150,
                           decoration: BoxDecoration(
-                            color: FlutterFlowTheme.of(context).primaryColor,
+                            color: FlutterFlowTheme.of(context).black600,
                             boxShadow: [
                               BoxShadow(
                                 blurRadius: 4,
@@ -200,7 +204,7 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                                 padding:
                                     EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
                                 child: AutoSizeText(
-                                  'Ubah Survei',
+                                  'Ubah\nSurvei',
                                   textAlign: TextAlign.center,
                                   style: FlutterFlowTheme.of(context)
                                       .subtitle1
@@ -221,7 +225,7 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                         width: MediaQuery.of(context).size.width * 0.4,
                         height: 150,
                         decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).primaryColor,
+                          color: FlutterFlowTheme.of(context).black600,
                           boxShadow: [
                             BoxShadow(
                               blurRadius: 4,
@@ -247,7 +251,7 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                               padding:
                                   EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
                               child: AutoSizeText(
-                                'Hasil Survei',
+                                'Hasil\nSurvei',
                                 textAlign: TextAlign.center,
                                 style: FlutterFlowTheme.of(context)
                                     .subtitle1
@@ -267,7 +271,7 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                         width: MediaQuery.of(context).size.width * 0.4,
                         height: 150,
                         decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).primaryColor,
+                          color: FlutterFlowTheme.of(context).black600,
                           boxShadow: [
                             BoxShadow(
                               blurRadius: 3,
@@ -277,34 +281,43 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                           ],
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(0, 16, 0, 0),
-                              child: FaIcon(
-                                FontAwesomeIcons.solidAddressCard,
-                                color: Colors.white,
-                                size: 38,
+                        child: InkWell(
+                          onTap: () async {
+                            logFirebaseEvent(
+                                'ADMIN_TEST_PAGE_Column_cceysom2_ON_TAP');
+                            logFirebaseEvent('Column_navigate_to');
+
+                            context.pushNamed('listWarga');
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding:
+                                    EdgeInsetsDirectional.fromSTEB(0, 16, 0, 0),
+                                child: FaIcon(
+                                  FontAwesomeIcons.solidAddressCard,
+                                  color: Colors.white,
+                                  size: 38,
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
-                              child: AutoSizeText(
-                                'Data Warga',
-                                textAlign: TextAlign.center,
-                                style: FlutterFlowTheme.of(context)
-                                    .subtitle1
-                                    .override(
-                                      fontFamily: 'Poppins',
-                                      color: Colors.white,
-                                    ),
+                              Padding(
+                                padding:
+                                    EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
+                                child: AutoSizeText(
+                                  'Data\nWarga',
+                                  textAlign: TextAlign.center,
+                                  style: FlutterFlowTheme.of(context)
+                                      .subtitle1
+                                      .override(
+                                        fontFamily: 'Poppins',
+                                        color: Colors.white,
+                                      ),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -317,13 +330,13 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                           logFirebaseEvent(
                               'edit_struktur_organisasi_navigate_to');
 
-                          context.pushNamed('Fitur_Organisasi');
+                          context.pushNamed('Ubah_organisasi');
                         },
                         child: Container(
                           width: MediaQuery.of(context).size.width * 0.4,
                           height: 150,
                           decoration: BoxDecoration(
-                            color: FlutterFlowTheme.of(context).primaryColor,
+                            color: FlutterFlowTheme.of(context).black600,
                             boxShadow: [
                               BoxShadow(
                                 blurRadius: 3,
@@ -350,7 +363,7 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                                 padding:
                                     EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
                                 child: AutoSizeText(
-                                  'Ubah Struktur',
+                                  'Ubah\nStruktur',
                                   textAlign: TextAlign.center,
                                   style: FlutterFlowTheme.of(context)
                                       .subtitle1
@@ -371,7 +384,7 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                         width: MediaQuery.of(context).size.width * 0.4,
                         height: 150,
                         decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).primaryColor,
+                          color: FlutterFlowTheme.of(context).black600,
                           boxShadow: [
                             BoxShadow(
                               blurRadius: 3,
@@ -398,7 +411,7 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                               padding:
                                   EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
                               child: AutoSizeText(
-                                'Pesan Masuk',
+                                'Pesan\nMasuk',
                                 textAlign: TextAlign.center,
                                 style: FlutterFlowTheme.of(context)
                                     .subtitle1
@@ -426,7 +439,7 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                           width: MediaQuery.of(context).size.width * 0.4,
                           height: 150,
                           decoration: BoxDecoration(
-                            color: FlutterFlowTheme.of(context).primaryColor,
+                            color: FlutterFlowTheme.of(context).black600,
                             boxShadow: [
                               BoxShadow(
                                 blurRadius: 3,
@@ -453,7 +466,7 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                                 padding:
                                     EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
                                 child: AutoSizeText(
-                                  'Ubah Berita',
+                                  'Ubah\nPengumuman',
                                   textAlign: TextAlign.center,
                                   style: FlutterFlowTheme.of(context)
                                       .subtitle1
@@ -471,6 +484,40 @@ class _AdminTestWidgetState extends State<AdminTestWidget> {
                     ),
                   ],
                 ),
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FFButtonWidget(
+                    onPressed: () async {
+                      logFirebaseEvent('ADMIN_TEST_PAGE_LOGOUT_BTN_ON_TAP');
+                      logFirebaseEvent('Button_auth');
+                      GoRouter.of(context).prepareAuthEvent();
+                      await signOut();
+
+                      context.goNamedAuth('LoginPage', mounted);
+                    },
+                    text: 'LOGOUT',
+                    options: FFButtonOptions(
+                      width: 140,
+                      height: 50,
+                      color: FlutterFlowTheme.of(context).black600,
+                      textStyle:
+                          FlutterFlowTheme.of(context).subtitle2.override(
+                                fontFamily: 'Lexend Deca',
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.normal,
+                              ),
+                      elevation: 2,
+                      borderSide: BorderSide(
+                        color: Colors.transparent,
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

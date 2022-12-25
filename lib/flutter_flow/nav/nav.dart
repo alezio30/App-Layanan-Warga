@@ -140,23 +140,23 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => UbahProfileWidget(),
             ),
             FFRoute(
-              name: 'inbox_page',
-              path: 'inboxPage',
-              asyncParams: {
-                'chatUser': getDoc('Users', UsersRecord.serializer),
-              },
-              builder: (context, params) => InboxPageWidget(
-                chatUser: params.getParam('chatUser', ParamType.Document),
-                chatRef: params.getParam(
-                    'chatRef', ParamType.DocumentReference, false, 'chats'),
-              ),
-            ),
-            FFRoute(
               name: 'all_inbox',
               path: 'allInbox',
               builder: (context, params) => params.isEmpty
                   ? NavBarPage(initialPage: 'all_inbox')
                   : AllInboxWidget(),
+            ),
+            FFRoute(
+              name: 'inbox_page',
+              path: 'inboxPage',
+              asyncParams: {
+                'chatUser': getDoc(['Users'], UsersRecord.serializer),
+              },
+              builder: (context, params) => InboxPageWidget(
+                chatUser: params.getParam('chatUser', ParamType.Document),
+                chatRef: params.getParam(
+                    'chatRef', ParamType.DocumentReference, false, ['chats']),
+              ),
             ),
             FFRoute(
               name: 'Survei_pg1',
@@ -187,6 +187,54 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               name: 'listWarga',
               path: 'listWarga',
               builder: (context, params) => ListWargaWidget(),
+            ),
+            FFRoute(
+              name: 'Ubah_organisasi',
+              path: 'ubahOrganisasi',
+              builder: (context, params) => UbahOrganisasiWidget(),
+            ),
+            FFRoute(
+              name: 'RT_Profile',
+              path: 'rTProfile',
+              builder: (context, params) => RTProfileWidget(
+                dataroles: params.getParam('dataroles',
+                    ParamType.DocumentReference, false, ['PerangkatRT']),
+              ),
+            ),
+            FFRoute(
+              name: 'WRT_Profile',
+              path: 'wRTProfile',
+              builder: (context, params) => WRTProfileWidget(),
+            ),
+            FFRoute(
+              name: 'RW_Profile',
+              path: 'rWProfile',
+              builder: (context, params) => RWProfileWidget(),
+            ),
+            FFRoute(
+              name: 'WRW_Profile',
+              path: 'wRWProfile',
+              builder: (context, params) => WRWProfileWidget(),
+            ),
+            FFRoute(
+              name: 'SEK_Profile',
+              path: 'sEKProfile',
+              builder: (context, params) => SEKProfileWidget(),
+            ),
+            FFRoute(
+              name: 'BEN_Profile',
+              path: 'bENProfile',
+              builder: (context, params) => BENProfileWidget(),
+            ),
+            FFRoute(
+              name: 'addChat',
+              path: 'addChat',
+              asyncParams: {
+                'chat': getDoc(['chats'], ChatsRecord.serializer),
+              },
+              builder: (context, params) => AddChatWidget(
+                chat: params.getParam('chat', ParamType.Document),
+              ),
             )
           ].map((r) => r.toRoute(appStateNotifier)).toList(),
         ).toRoute(appStateNotifier),
@@ -299,7 +347,7 @@ class FFParameters {
     String paramName,
     ParamType type, [
     bool isList = false,
-    String? collectionName,
+    List<String>? collectionNamePath,
   ]) {
     if (futureParamValues.containsKey(paramName)) {
       return futureParamValues[paramName];
@@ -313,7 +361,7 @@ class FFParameters {
       return param;
     }
     // Return serialized value.
-    return deserializeParam<T>(param, type, isList, collectionName);
+    return deserializeParam<T>(param, type, isList, collectionNamePath);
   }
 }
 

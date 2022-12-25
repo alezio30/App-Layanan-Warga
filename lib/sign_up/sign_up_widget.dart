@@ -15,11 +15,9 @@ class SignUpWidget extends StatefulWidget {
 
 class _SignUpWidgetState extends State<SignUpWidget> {
   TextEditingController? confirmPasswordTextController;
-
   late bool passwordVisibility2;
   TextEditingController? emailTextController;
   TextEditingController? passwordTextController;
-
   late bool passwordVisibility1;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -32,6 +30,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     passwordTextController = TextEditingController();
     passwordVisibility1 = false;
     logFirebaseEvent('screen_view', parameters: {'screen_name': 'SignUp'});
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   @override

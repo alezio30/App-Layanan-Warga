@@ -21,6 +21,7 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
     super.initState();
     logFirebaseEvent('screen_view', parameters: {'screen_name': 'listWarga'});
     textController = TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   @override
@@ -53,7 +54,7 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
                       'Data Warga',
                       style: FlutterFlowTheme.of(context).title1.override(
                             fontFamily: 'Poppins',
-                            color: FlutterFlowTheme.of(context).primaryColor,
+                            color: FlutterFlowTheme.of(context).black600,
                           ),
                     ),
                   ],
@@ -181,10 +182,10 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
                 ),
               ),
               Expanded(
-                child: StreamBuilder<List<UsersRecord>>(
-                  stream: queryUsersRecord(
-                    queryBuilder: (usersRecord) =>
-                        usersRecord.orderBy('display_name'),
+                child: StreamBuilder<List<DataWargaRecord>>(
+                  stream: queryDataWargaRecord(
+                    queryBuilder: (dataWargaRecord) =>
+                        dataWargaRecord.orderBy('NamaWarga'),
                   ),
                   builder: (context, snapshot) {
                     // Customize what your widget looks like when it's loading.
@@ -200,116 +201,181 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
                         ),
                       );
                     }
-                    List<UsersRecord> listViewUsersRecordList = snapshot.data!;
+                    List<DataWargaRecord> listViewDataWargaRecordList =
+                        snapshot.data!;
                     return ListView.builder(
                       padding: EdgeInsets.zero,
                       scrollDirection: Axis.vertical,
-                      itemCount: listViewUsersRecordList.length,
+                      itemCount: listViewDataWargaRecordList.length,
                       itemBuilder: (context, listViewIndex) {
-                        final listViewUsersRecord =
-                            listViewUsersRecordList[listViewIndex];
+                        final listViewDataWargaRecord =
+                            listViewDataWargaRecordList[listViewIndex];
                         return Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 1),
-                          child: Container(
-                            width: double.infinity,
-                            height: 90,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Column(
+                          child: StreamBuilder<DataWargaRecord>(
+                            stream: DataWargaRecord.getDocument(
+                                listViewDataWargaRecord.reference),
+                            builder: (context, snapshot) {
+                              // Customize what your widget looks like when it's loading.
+                              if (!snapshot.hasData) {
+                                return Center(
+                                  child: SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: SpinKitFadingFour(
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryColor,
+                                      size: 50,
+                                    ),
+                                  ),
+                                );
+                              }
+                              final storeListViewDataWargaRecord =
+                                  snapshot.data!;
+                              return Container(
+                                width: double.infinity,
+                                height: 90,
+                                decoration: BoxDecoration(
+                                  color: FlutterFlowTheme.of(context)
+                                      .secondaryBackground,
+                                ),
+                                child: Row(
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          8, 8, 8, 8),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Image.network(
-                                          listViewUsersRecord.photoUrl!,
-                                          width: 74,
-                                          height: 74,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        8, 1, 0, 0),
-                                    child: Column(
+                                    Column(
                                       mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
                                       children: [
-                                        Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Text(
-                                              listViewUsersRecord.displayName!,
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .subtitle2,
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Text(
-                                              listViewUsersRecord.alamat!,
-                                              maxLines: 3,
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyText2,
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Text(
-                                              '1.7mi',
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .bodyText1
-                                                  .override(
-                                                    fontFamily: 'Poppins',
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .primaryColor,
-                                                    fontWeight: FontWeight.w500,
+                                        Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  8, 8, 8, 8),
+                                          child:
+                                              StreamBuilder<List<UsersRecord>>(
+                                            stream: queryUsersRecord(),
+                                            builder: (context, snapshot) {
+                                              // Customize what your widget looks like when it's loading.
+                                              if (!snapshot.hasData) {
+                                                return Center(
+                                                  child: SizedBox(
+                                                    width: 50,
+                                                    height: 50,
+                                                    child: SpinKitFadingFour(
+                                                      color:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .primaryColor,
+                                                      size: 50,
+                                                    ),
                                                   ),
-                                            ),
-                                          ],
+                                                );
+                                              }
+                                              List<UsersRecord>
+                                                  imageUsersRecordList =
+                                                  snapshot.data!;
+                                              return ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                child: Image.network(
+                                                  valueOrDefault<String>(
+                                                    listViewDataWargaRecord
+                                                        .foto,
+                                                    'Foto',
+                                                  ),
+                                                  width: 74,
+                                                  height: 74,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              );
+                                            },
+                                          ),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ),
-                                Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
                                     Expanded(
                                       child: Padding(
                                         padding: EdgeInsetsDirectional.fromSTEB(
-                                            0, 0, 8, 0),
-                                        child: Icon(
-                                          Icons.chevron_right_outlined,
-                                          color: Color(0xFF95A1AC),
-                                          size: 24,
+                                            8, 1, 0, 0),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                Text(
+                                                  valueOrDefault<String>(
+                                                    listViewDataWargaRecord
+                                                        .namaWarga,
+                                                    'Nama Warga',
+                                                  ),
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .subtitle2,
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                Text(
+                                                  valueOrDefault<String>(
+                                                    listViewDataWargaRecord.nik,
+                                                    'Nik',
+                                                  ),
+                                                  maxLines: 3,
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyText2,
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                Text(
+                                                  listViewDataWargaRecord
+                                                      .alamat!,
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyText1
+                                                      .override(
+                                                        fontFamily: 'Poppins',
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .primaryColor,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
+                                    Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Expanded(
+                                          child: Padding(
+                                            padding:
+                                                EdgeInsetsDirectional.fromSTEB(
+                                                    0, 0, 8, 0),
+                                            child: Icon(
+                                              Icons.chevron_right_outlined,
+                                              color: Color(0xFF95A1AC),
+                                              size: 24,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
-                              ],
-                            ),
+                              );
+                            },
                           ),
                         );
                       },

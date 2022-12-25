@@ -17,8 +17,8 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
   TextEditingController? emailTextController;
   TextEditingController? textController;
   TextEditingController? passwordTextController;
-
   late bool passwordVisibility;
+  final _unfocusNode = FocusNode();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -30,10 +30,12 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
     passwordVisibility = false;
     logFirebaseEvent('screen_view',
         parameters: {'screen_name': 'Forgot_Password'});
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   @override
   void dispose() {
+    _unfocusNode.dispose();
     emailTextController?.dispose();
     textController?.dispose();
     passwordTextController?.dispose();
@@ -47,7 +49,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
       body: SafeArea(
         child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
+          onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
           child: Container(
             width: double.infinity,
             height: double.infinity,

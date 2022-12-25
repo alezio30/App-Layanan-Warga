@@ -18,8 +18,8 @@ class LoginPageWidget extends StatefulWidget {
 class _LoginPageWidgetState extends State<LoginPageWidget> {
   TextEditingController? emailController;
   TextEditingController? passController;
-
   late bool passVisibility;
+  final _unfocusNode = FocusNode();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -47,10 +47,12 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
     emailController = TextEditingController();
     passController = TextEditingController();
     passVisibility = false;
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   @override
   void dispose() {
+    _unfocusNode.dispose();
     emailController?.dispose();
     passController?.dispose();
     super.dispose();
@@ -63,7 +65,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
+          onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
           child: Container(
             width: double.infinity,
             height: double.infinity,
@@ -158,7 +160,6 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                 labelText: 'User / Email Address',
                                 labelStyle:
                                     FlutterFlowTheme.of(context).bodyText2,
-                                hintText: 'User / Email Address',
                                 hintStyle:
                                     FlutterFlowTheme.of(context).bodyText2,
                                 enabledBorder: OutlineInputBorder(

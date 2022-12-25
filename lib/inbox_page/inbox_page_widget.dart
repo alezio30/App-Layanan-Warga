@@ -51,6 +51,7 @@ class _InboxPageWidgetState extends State<InboxPageWidget> {
     });
 
     logFirebaseEvent('screen_view', parameters: {'screen_name': 'inbox_page'});
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   @override

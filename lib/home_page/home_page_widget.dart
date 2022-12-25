@@ -26,7 +26,21 @@ class _HomePageWidgetState extends State<HomePageWidget>
   @override
   void initState() {
     super.initState();
+    // On page load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      logFirebaseEvent('HOME_PAGE_PAGE_HomePage_ON_PAGE_LOAD');
+      if (valueOrDefault<bool>(currentUserDocument?.rolesAdmin, false) ==
+          true) {
+        logFirebaseEvent('HomePage_navigate_to');
+
+        context.pushNamed('admin_test');
+      } else {
+        return;
+      }
+    });
+
     logFirebaseEvent('screen_view', parameters: {'screen_name': 'HomePage'});
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   @override
@@ -165,13 +179,13 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                       ),
                                     ],
                                   ),
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0, 4, 0, 0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Text(
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            0, 0, 0, 4),
+                                        child: Text(
                                           homePageUsersRecord.displayName!,
                                           style: FlutterFlowTheme.of(context)
                                               .bodyText1
@@ -182,8 +196,8 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                                         .secondaryBackground,
                                               ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -455,7 +469,7 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       0, 8, 0, 0),
                                   child: AutoSizeText(
-                                    'Organisasi',
+                                    'Perangkat RT',
                                     textAlign: TextAlign.center,
                                     style: FlutterFlowTheme.of(context)
                                         .subtitle1
@@ -470,7 +484,7 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         8, 4, 8, 0),
                                     child: Text(
-                                      'lihat struktur organisasi disini',
+                                      'lihat profil dari peangkat RT',
                                       textAlign: TextAlign.center,
                                       style: GoogleFonts.getFont(
                                         'Lexend Deca',

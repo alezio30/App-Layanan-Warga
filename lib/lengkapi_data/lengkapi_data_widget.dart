@@ -40,6 +40,7 @@ class _LengkapiDataWidgetState extends State<LengkapiDataWidget> {
     ttlController = TextEditingController();
     logFirebaseEvent('screen_view',
         parameters: {'screen_name': 'Lengkapi_Data'});
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   @override
@@ -108,7 +109,8 @@ class _LengkapiDataWidgetState extends State<LengkapiDataWidget> {
                       onTap: () async {
                         logFirebaseEvent(
                             'LENGKAPI_DATA_CircleImage_vpz5rxm4_ON_TA');
-                        logFirebaseEvent('CircleImage_upload_photo_video');
+                        logFirebaseEvent(
+                            'CircleImage_upload_media_to_firebase');
                         final selectedMedia =
                             await selectMediaWithSourceBottomSheet(
                           context: context,
@@ -599,11 +601,18 @@ class _LengkapiDataWidgetState extends State<LengkapiDataWidget> {
                             Text(
                               'Status Nikah',
                               textAlign: TextAlign.center,
-                              style: FlutterFlowTheme.of(context).bodyText1,
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyText1
+                                  .override(
+                                    fontFamily: 'Poppins',
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryText,
+                                    fontWeight: FontWeight.normal,
+                                  ),
                             ),
                             FlutterFlowDropDown<String>(
                               initialOption: dropDownValue ??= '',
-                              options: ['Option 1', ''],
+                              options: ['Belum Menikah', 'Sudah Menikah'],
                               optionLabels: ['Belum Nikah', 'Menikah'],
                               onChanged: (val) =>
                                   setState(() => dropDownValue = val),
@@ -613,7 +622,9 @@ class _LengkapiDataWidgetState extends State<LengkapiDataWidget> {
                                   .bodyText1
                                   .override(
                                     fontFamily: 'Poppins',
-                                    color: Colors.black,
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryText,
+                                    fontWeight: FontWeight.normal,
                                   ),
                               hintText: 'Please select...',
                               fillColor: Colors.white,
@@ -645,7 +656,6 @@ class _LengkapiDataWidgetState extends State<LengkapiDataWidget> {
                               logFirebaseEvent('Button_backend_call');
 
                               final usersUpdateData = createUsersRecordData(
-                                displayName: namaTextController!.text,
                                 photoUrl: uploadedFileUrl,
                                 createdTime: getCurrentTimestamp,
                                 phoneNumber: noHpController!.text,
@@ -653,10 +663,11 @@ class _LengkapiDataWidgetState extends State<LengkapiDataWidget> {
                                 email: currentUserEmail,
                                 uid: currentUserUid,
                                 ttl: ttlController!.text,
-                                alamat: valueOrDefault(
-                                    currentUserDocument?.alamat, ''),
+                                alamat: alamatTxtController!.text,
                                 agama: agamatTxtController!.text,
                                 rolesAdmin: false,
+                                displayName: namaTextController!.text,
+                                statusNikah: dropDownValue,
                               );
                               await currentUserReference!
                                   .update(usersUpdateData);

@@ -14,17 +14,21 @@ class FiturAlamatWidget extends StatefulWidget {
 }
 
 class _FiturAlamatWidgetState extends State<FiturAlamatWidget> {
+  LatLng? currentUserLocationValue;
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   LatLng? googleMapsCenter;
   final googleMapsController = Completer<GoogleMapController>();
   TextEditingController? textController;
-  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
+    getCurrentUserLocation(defaultLocation: LatLng(0.0, 0.0), cached: true)
+        .then((loc) => setState(() => currentUserLocationValue = loc));
     logFirebaseEvent('screen_view',
         parameters: {'screen_name': 'Fitur_Alamat'});
     textController = TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   @override
@@ -35,6 +39,22 @@ class _FiturAlamatWidgetState extends State<FiturAlamatWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (currentUserLocationValue == null) {
+      return Container(
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        child: Center(
+          child: SizedBox(
+            width: 50,
+            height: 50,
+            child: SpinKitFadingFour(
+              color: FlutterFlowTheme.of(context).primaryColor,
+              size: 50,
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       key: scaffoldKey,
       resizeToAvoidBottomInset: false,
@@ -86,7 +106,7 @@ class _FiturAlamatWidgetState extends State<FiturAlamatWidget> {
                       controller: googleMapsController,
                       onCameraIdle: (latLng) => googleMapsCenter = latLng,
                       initialLocation: googleMapsCenter ??=
-                          LatLng(1.0457862238127982, 103.95180534462651),
+                          currentUserLocationValue!,
                       markerColor: GoogleMarkerColor.violet,
                       mapType: MapType.normal,
                       style: GoogleMapStyle.standard,

@@ -1,3 +1,5 @@
+import '../auth/auth_util.dart';
+import '../backend/backend.dart';
 import '../backend/firebase_storage/storage.dart';
 import '../flutter_flow/flutter_flow_drop_down.dart';
 import '../flutter_flow/flutter_flow_icon_button.dart';
@@ -5,6 +7,7 @@ import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
 import '../flutter_flow/upload_media.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,6 +34,7 @@ class _FiturPendudukBaruWidgetState extends State<FiturPendudukBaruWidget> {
   bool isMediaUploading2 = false;
   String uploadedFileUrl2 = '';
 
+  final _unfocusNode = FocusNode();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -44,10 +48,12 @@ class _FiturPendudukBaruWidgetState extends State<FiturPendudukBaruWidget> {
     textController4 = TextEditingController();
     textController5 = TextEditingController();
     textController6 = TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   @override
   void dispose() {
+    _unfocusNode.dispose();
     textController1?.dispose();
     textController2?.dispose();
     textController3?.dispose();
@@ -95,7 +101,7 @@ class _FiturPendudukBaruWidgetState extends State<FiturPendudukBaruWidget> {
       ),
       body: SafeArea(
         child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
+          onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
           child: ListView(
             padding: EdgeInsets.zero,
             scrollDirection: Axis.vertical,
@@ -1030,39 +1036,48 @@ class _FiturPendudukBaruWidgetState extends State<FiturPendudukBaruWidget> {
                                   onPressed: () async {
                                     logFirebaseEvent(
                                         'FITUR_PENDUDUK_BARU_UPLOAD_FILE_K_K_ANDA');
-                                    logFirebaseEvent('Button_upload_file');
-                                    final selectedFile = await selectFile(
-                                        allowedExtensions: ['pdf']);
-                                    if (selectedFile != null) {
+                                    logFirebaseEvent(
+                                        'Button_upload_media_to_firebase');
+                                    final selectedMedia =
+                                        await selectMediaWithSourceBottomSheet(
+                                      context: context,
+                                      allowPhoto: true,
+                                    );
+                                    if (selectedMedia != null &&
+                                        selectedMedia.every((m) =>
+                                            validateFileFormat(
+                                                m.storagePath, context))) {
                                       setState(() => isMediaUploading1 = true);
-                                      String? downloadUrl;
+                                      var downloadUrls = <String>[];
                                       try {
                                         showUploadMessage(
                                           context,
                                           'Uploading file...',
                                           showLoading: true,
                                         );
-                                        downloadUrl = await uploadData(
-                                            selectedFile.storagePath,
-                                            selectedFile.bytes);
+                                        downloadUrls = (await Future.wait(
+                                          selectedMedia.map(
+                                            (m) async => await uploadData(
+                                                m.storagePath, m.bytes),
+                                          ),
+                                        ))
+                                            .where((u) => u != null)
+                                            .map((u) => u!)
+                                            .toList();
                                       } finally {
                                         ScaffoldMessenger.of(context)
                                             .hideCurrentSnackBar();
                                         isMediaUploading1 = false;
                                       }
-                                      if (downloadUrl != null) {
-                                        setState(() =>
-                                            uploadedFileUrl1 = downloadUrl!);
-                                        showUploadMessage(
-                                          context,
-                                          'Success!',
-                                        );
+                                      if (downloadUrls.length ==
+                                          selectedMedia.length) {
+                                        setState(() => uploadedFileUrl1 =
+                                            downloadUrls.first);
+                                        showUploadMessage(context, 'Success!');
                                       } else {
                                         setState(() {});
                                         showUploadMessage(
-                                          context,
-                                          'Failed to upload file',
-                                        );
+                                            context, 'Failed to upload media');
                                         return;
                                       }
                                     }
@@ -1153,39 +1168,48 @@ class _FiturPendudukBaruWidgetState extends State<FiturPendudukBaruWidget> {
                                   onPressed: () async {
                                     logFirebaseEvent(
                                         'FITUR_PENDUDUK_BARU_UPLOAD_FILE_K_T_P_AN');
-                                    logFirebaseEvent('Button_upload_file');
-                                    final selectedFile = await selectFile(
-                                        allowedExtensions: ['pdf']);
-                                    if (selectedFile != null) {
+                                    logFirebaseEvent(
+                                        'Button_upload_media_to_firebase');
+                                    final selectedMedia =
+                                        await selectMediaWithSourceBottomSheet(
+                                      context: context,
+                                      allowPhoto: true,
+                                    );
+                                    if (selectedMedia != null &&
+                                        selectedMedia.every((m) =>
+                                            validateFileFormat(
+                                                m.storagePath, context))) {
                                       setState(() => isMediaUploading2 = true);
-                                      String? downloadUrl;
+                                      var downloadUrls = <String>[];
                                       try {
                                         showUploadMessage(
                                           context,
                                           'Uploading file...',
                                           showLoading: true,
                                         );
-                                        downloadUrl = await uploadData(
-                                            selectedFile.storagePath,
-                                            selectedFile.bytes);
+                                        downloadUrls = (await Future.wait(
+                                          selectedMedia.map(
+                                            (m) async => await uploadData(
+                                                m.storagePath, m.bytes),
+                                          ),
+                                        ))
+                                            .where((u) => u != null)
+                                            .map((u) => u!)
+                                            .toList();
                                       } finally {
                                         ScaffoldMessenger.of(context)
                                             .hideCurrentSnackBar();
                                         isMediaUploading2 = false;
                                       }
-                                      if (downloadUrl != null) {
-                                        setState(() =>
-                                            uploadedFileUrl2 = downloadUrl!);
-                                        showUploadMessage(
-                                          context,
-                                          'Success!',
-                                        );
+                                      if (downloadUrls.length ==
+                                          selectedMedia.length) {
+                                        setState(() => uploadedFileUrl2 =
+                                            downloadUrls.first);
+                                        showUploadMessage(context, 'Success!');
                                       } else {
                                         setState(() {});
                                         showUploadMessage(
-                                          context,
-                                          'Failed to upload file',
-                                        );
+                                            context, 'Failed to upload media');
                                         return;
                                       }
                                     }
@@ -1221,8 +1245,31 @@ class _FiturPendudukBaruWidgetState extends State<FiturPendudukBaruWidget> {
                     Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(0, 24, 0, 80),
                       child: FFButtonWidget(
-                        onPressed: () {
-                          print('Button pressed ...');
+                        onPressed: () async {
+                          logFirebaseEvent(
+                              'FITUR_PENDUDUK_BARU_KIRIM_BTN_ON_TAP');
+                          logFirebaseEvent('Button_backend_call');
+
+                          final dataWargaCreateData = createDataWargaRecordData(
+                            dokumenWarga: currentUserReference,
+                            namaWarga: textController1!.text,
+                            nik: textController2!.text,
+                            noKK: int.tryParse(textController3!.text),
+                            tanggalLahir: textController4!.text,
+                            tempatLahir: textController5!.text,
+                            statusNikah: dropDownValue,
+                            agama: textController6!.text,
+                            kKfoto: uploadedFileUrl1,
+                            kTPScan: uploadedFileUrl2,
+                            alamat:
+                                valueOrDefault(currentUserDocument?.alamat, ''),
+                            foto: currentUserPhoto,
+                          );
+                          await DataWargaRecord.collection
+                              .doc()
+                              .set(dataWargaCreateData);
+                          logFirebaseEvent('Button_navigate_back');
+                          context.pop();
                         },
                         text: 'KIRIM',
                         options: FFButtonOptions(
